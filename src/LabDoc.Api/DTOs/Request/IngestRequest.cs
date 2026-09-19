@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 namespace LabDoc.Api.DTOs.Request;
 
 /// <summary>
-/// Payload de POST /api/v1/ingest — multipart/form-data.
-/// Propriedades init em vez de record posicional: o mapeador de form do minimal API
-/// nao honra defaults de parametro de construtor e exigiria todos os campos no request.
+/// Payload of POST /api/v1/ingest — multipart/form-data.
+/// Init properties instead of a positional record: the minimal API form mapper
+/// does not honour constructor parameter defaults and would require every field.
 /// </summary>
 public sealed record IngestRequest
 {
@@ -19,7 +19,7 @@ public sealed record IngestRequest
     public string? SourceSystem { get; init; }
 
     /// <summary>
-    /// Forca reprocessamento mesmo que o documento ja exista com a mesma configuracao.
+    /// Reprocess even when the document already exists with the same configuration.
     /// </summary>
     public bool Force { get; init; }
 }

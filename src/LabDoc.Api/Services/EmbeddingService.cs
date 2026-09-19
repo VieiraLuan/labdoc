@@ -15,7 +15,7 @@ public sealed class EmbeddingService : IEmbeddingService
     public EmbeddingService(OpenAIClient client, IConfiguration configuration, ILogger<EmbeddingService> logger)
     {
         _model = configuration["Llm:EmbeddingModel"]
-            ?? throw new InvalidOperationException("Llm:EmbeddingModel nao configurado.");
+            ?? throw new InvalidOperationException("Llm:EmbeddingModel is not configured.");
         _embeddings = client.GetEmbeddingClient(_model);
         _expectedDimensions = configuration.GetValue("Llm:EmbeddingDimensions", 1024);
         _batchSize = configuration.GetValue("Llm:EmbeddingBatchSize", 32);
@@ -23,7 +23,7 @@ public sealed class EmbeddingService : IEmbeddingService
 
         if (_batchSize < 1)
         {
-            throw new InvalidOperationException($"Llm:EmbeddingBatchSize deve ser >= 1. Valor atual: {_batchSize}.");
+            throw new InvalidOperationException($"Llm:EmbeddingBatchSize must be >= 1. Current value: {_batchSize}.");
         }
     }
 
@@ -51,15 +51,15 @@ public sealed class EmbeddingService : IEmbeddingService
                 results.Add(embedding.ToFloats().ToArray());
             }
 
-            _logger.LogDebug("Lote {Batch}: {Count} vetores ({Total}/{Expected}).",
+            _logger.LogDebug("Batch {Batch}: {Count} vectors ({Total}/{Expected}).",
                 batchNumber, batch.Length, results.Count, texts.Count);
         }
 
         if (results.Count != texts.Count)
         {
             throw new InvalidOperationException(
-                $"O modelo '{_model}' devolveu {results.Count} vetores para {texts.Count} textos. " +
-                "A correspondencia chunk/vetor foi perdida.");
+                $"Model '{_model}' returned {results.Count} vectors for {texts.Count} texts. " +
+                "The chunk/vector correspondence was lost.");
         }
 
         EnsureDimensions(results[0]);
@@ -71,11 +71,11 @@ public sealed class EmbeddingService : IEmbeddingService
     {
         if (string.IsNullOrWhiteSpace(text))
         {
-            throw new ArgumentException("Texto vazio nao pode ser embedado.", nameof(text));
+            throw new ArgumentException("An empty text cannot be embedded.", nameof(text));
         }
 
-        // Separado de EmbedDocumentsAsync de proposito: modelos assimetricos
-        // (nomic, E5) exigem prefixo diferente aqui. O bge-m3 nao precisa.
+        // Kept separate from EmbedDocumentsAsync on purpose: asymmetric models
+        // (nomic, E5) need a different prefix here. bge-m3 does not.
         var response = await _embeddings.GenerateEmbeddingAsync(text, cancellationToken: ct);
         var vector = response.Value.ToFloats().ToArray();
 
@@ -89,7 +89,7 @@ public sealed class EmbeddingService : IEmbeddingService
         if (vector.Length != _expectedDimensions)
         {
             throw new InvalidOperationException(
-                $"O modelo '{_model}' devolveu vetores de {vector.Length} dimensoes, " +
+                $"Model '{_model}' returned vectors of {vector.Length} dimensions, " +
                 $"mas Llm:EmbeddingDimensions esta em {_expectedDimensions}. " +
                 "Corrija a configuracao ou a collection do Qdrant vai rejeitar os pontos.");
         }

@@ -5,9 +5,9 @@ public interface IChatService
     Task<string> CompleteAsync(string systemPrompt, string userPrompt, CancellationToken ct = default);
 
     /// <summary>
-    /// Igual ao CompleteAsync, mas amarrado a um JSON Schema. O modelo nao
-    /// "escolhe" obedecer: a decodificacao e restringida pela gramatica do
-    /// schema, entao nao existe token possivel fora dele.
+    /// Same as CompleteAsync, but bound to a JSON Schema. The model does not
+    /// "choose" to comply: decoding is constrained by the schema's grammar, so
+    /// no token outside it is even possible.
     /// </summary>
     Task<string> CompleteJsonAsync(
         string systemPrompt,

@@ -63,8 +63,8 @@ public class RagIngestService : IRagIngest
         var embeddingModel = _configuration["Llm:EmbeddingModel"] ?? "desconhecido";
         var collectionName = _configuration["Qdrant:Collection"] ?? "desconhecida";
 
-        // Consulta ANTES de extrair e embedar: se nada que afeta os vetores mudou,
-        // eles ja estao no Qdrant e reprocessar seria puro desperdicio.
+        // Looked up BEFORE extracting and embedding: if nothing that affects the
+        // vectors changed, they are already in Qdrant and redoing the work is waste.
         var existing = await _documentStore.FindByContentHashAsync(contentHash, ct);
 
         if (!force
@@ -76,7 +76,7 @@ public class RagIngestService : IRagIngest
             && existing.Status == DocumentRecord.StatusCompleted)
         {
             _logger.LogInformation(
-                "Documento {Id} ja ingerido com a mesma configuracao (hash {Hash}): reaproveitando.",
+                "Document {Id} already ingested with the same configuration (hash {Hash}): reusing it.",
                 existing.Id, contentHash[..12]);
 
             return new IngestResponse(
@@ -91,7 +91,7 @@ public class RagIngestService : IRagIngest
         {
             PDF => await _pdfTextExtractor.ExtractTextAsync(content, ct),
             DOCX or TXT or CSV => throw new NotSupportedException(
-                $"Extracao de {extension} ainda nao implementada."),
+                $"{extension} extraction is not implemented yet."),
             _ => throw new ArgumentException(
                 $"File type '{extension}' is not supported. Supported types are: {PDF}, {DOCX}, {TXT}, {CSV}",
                 nameof(file))
@@ -101,8 +101,8 @@ public class RagIngestService : IRagIngest
 
         var embeddings = await _embeddingService.EmbedDocumentsAsync(chunks, ct);
 
-        // Chegou aqui: ou e documento novo, ou algo que afeta os vetores mudou.
-        // Reaproveita o Id para sobrescrever os pontos em vez de duplicar.
+        // Reaching here means either a new document, or something that affects the
+        // vectors changed. Reuse the id so the points are overwritten, not duplicated.
         var documentId = existing?.Id ?? Guid.NewGuid();
 
 
@@ -126,9 +126,9 @@ public class RagIngestService : IRagIngest
             CreatedAt: now,
             UpdatedAt: now), ct);
 
-        // A extracao de master data precisa do documento inteiro, e o RAG so guarda
-        // ele fatiado no Qdrant. Salvar aqui e o que permite os dois pipelines
-        // conviverem sobre o mesmo ingest.
+        // Master data extraction needs the whole document, and the RAG path only
+        // keeps it sliced in Qdrant. Storing it here is what lets both pipelines
+        // live on top of the same ingest.
         await _documentStore.SaveFullTextAsync(documentId, text, ct);
 
         IngestResponse response = new IngestResponse(

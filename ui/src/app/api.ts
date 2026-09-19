@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
-// Caminho relativo: o nginx (ou o proxy do ng serve) encaminha /api para a API .NET.
-// Assim o browser nunca fala com outra origem e nao existe problema de CORS.
+// Relative path: nginx (or the ng serve proxy) forwards /api to the .NET API,
+// so the browser never talks to another origin and CORS never comes up.
 const BASE = '/api/v1';
 
 export interface AskSource {

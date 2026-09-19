@@ -3,13 +3,13 @@ using Json.Schema;
 namespace LabDoc.Api.Services;
 
 /// <summary>
-/// Segura o JSON Schema do contrato, compilado uma unica vez.
+/// Holds the contract's JSON Schema, compiled exactly once.
 ///
-/// Por que uma classe so para isto: JsonSchema.FromText registra o schema num
-/// registro GLOBAL, pela URI do $id dele. Compilar duas vezes lanca
-/// "Overwriting registered schemas is not permitted" — ou seja, um servico
-/// Scoped que compilasse o schema no construtor funcionaria na primeira request
-/// e quebraria na segunda. Sendo Singleton, compila no boot e pronto.
+/// Why this deserves its own class: JsonSchema.FromText registers the schema in a
+/// GLOBAL registry, keyed by its $id URI. Compiling it twice throws
+/// "Overwriting registered schemas is not permitted" — so a Scoped service that
+/// compiled the schema in its constructor would work on the first request and
+/// break on the second. As a Singleton it compiles at boot and that is that.
 /// </summary>
 public sealed class MasterDataSchema
 {
@@ -23,11 +23,11 @@ public sealed class MasterDataSchema
 
         if (!File.Exists(path))
         {
-            logger.LogWarning("Schema do contrato nao encontrado em {Path}: validacao desligada.", path);
+            logger.LogWarning("Contract schema not found at {Path}: validation is disabled.", path);
             return;
         }
 
         Schema = JsonSchema.FromText(File.ReadAllText(path));
-        logger.LogInformation("Schema do contrato carregado de {Path}.", path);
+        logger.LogInformation("Contract schema loaded from {Path}.", path);
     }
 }

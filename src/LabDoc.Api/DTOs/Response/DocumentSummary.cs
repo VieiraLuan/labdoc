@@ -1,11 +1,11 @@
 namespace LabDoc.Api.DTOs.Response;
 
 /// <summary>
-/// Visao de listagem de um documento ingerido.
+/// Listing view of an ingested document.
 ///
-/// HasFullText importa: a extracao de master data precisa do texto completo, e
-/// documentos ingeridos antes da coluna full_text existir nao tem. Sem esse
-/// campo o usuario so descobre quando a extracao falha.
+/// HasFullText matters: master data extraction needs the complete text, and
+/// documents ingested before the full_text column existed do not have it.
+/// Without this field the user only finds out when the extraction fails.
 /// </summary>
 public sealed record DocumentSummary(
     Guid Id,

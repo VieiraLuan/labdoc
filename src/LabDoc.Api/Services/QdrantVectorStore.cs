@@ -20,7 +20,7 @@ public sealed class QdrantVectorStore : IVectorStore
         _client = client;
         _logger = logger;
         _collection = configuration["Qdrant:Collection"]
-            ?? throw new InvalidOperationException("Qdrant:Collection nao configurado.");
+            ?? throw new InvalidOperationException("Qdrant:Collection is not configured.");
         _embeddingModel = configuration["Llm:EmbeddingModel"] ?? "desconhecido";
         _dimensions = (ulong)configuration.GetValue("Llm:EmbeddingDimensions", 1024);
     }
@@ -35,7 +35,7 @@ public sealed class QdrantVectorStore : IVectorStore
                 cancellationToken: ct);
 
             _logger.LogInformation(
-                "Collection '{Collection}' criada com {Dims} dimensoes, distancia Cosine.",
+                "Collection '{Collection}' created with {Dims} dimensions, Cosine distance.",
                 _collection, _dimensions);
             return;
         }
@@ -46,13 +46,13 @@ public sealed class QdrantVectorStore : IVectorStore
         if (existing != _dimensions)
         {
             throw new InvalidOperationException(
-                $"A collection '{_collection}' foi criada com {existing} dimensoes, " +
-                $"mas Llm:EmbeddingDimensions esta em {_dimensions}. " +
-                "Use outra collection (o nome deve carregar o modelo) ou apague esta.");
+                $"Collection '{_collection}' was created with {existing} dimensions, " +
+                $"but Llm:EmbeddingDimensions is set to {_dimensions}. " +
+                "Use another collection (its name should carry the model) or drop this one.");
         }
 
         _logger.LogInformation(
-            "Collection '{Collection}' ja existe: {Dims} dimensoes, {Points} pontos.",
+            "Collection '{Collection}' already exists: {Dims} dimensions, {Points} points.",
             _collection, existing, info.PointsCount);
     }
 
@@ -67,7 +67,7 @@ public sealed class QdrantVectorStore : IVectorStore
         if (chunks.Count != vectors.Count)
         {
             throw new InvalidOperationException(
-                $"{chunks.Count} chunks para {vectors.Count} vetores: a correspondencia foi perdida.");
+                $"{chunks.Count} chunks for {vectors.Count} vectors: the correspondence was lost.");
         }
 
         if (chunks.Count == 0)
@@ -98,7 +98,7 @@ public sealed class QdrantVectorStore : IVectorStore
         await _client.UpsertAsync(_collection, points, cancellationToken: ct);
 
         _logger.LogInformation(
-            "Upsert de {Count} pontos do documento {DocumentId} ({File}) em '{Collection}'.",
+            "Upserted {Count} points of document {DocumentId} ({File}) into '{Collection}'.",
             points.Count, documentId, fileName, _collection);
 
         return points.Count;
@@ -119,8 +119,8 @@ public sealed class QdrantVectorStore : IVectorStore
         if (queryVector.Length != (int)_dimensions)
         {
             throw new InvalidOperationException(
-                $"O vetor da pergunta tem {queryVector.Length} dimensoes, " +
-                $"mas a collection '{_collection}' espera {_dimensions}.");
+                $"The query vector has {queryVector.Length} dimensions, " +
+                $"but collection '{_collection}' expects {_dimensions}.");
         }
 
         var results = await _client.QueryAsync(
@@ -145,7 +145,7 @@ public sealed class QdrantVectorStore : IVectorStore
         }
 
         _logger.LogInformation(
-            "Busca em '{Collection}': {Count} resultados, melhor score {Score:F4}.",
+            "Search in '{Collection}': {Count} results, best score {Score:F4}.",
             _collection, hits.Count, hits.Count > 0 ? hits[0].Score : 0f);
 
         return hits;

@@ -3,8 +3,8 @@ namespace LabDoc.Api.Interfaces;
 public interface IPDFTextExtractor
 {
     /// <summary>
-    /// Extrai o texto de um PDF. Recebe Stream — nao conhece HTTP nem caminho em disco,
-    /// entao serve tanto para upload quanto para arquivo local ou fila.
+    /// Extracts the text of a PDF. Takes a Stream — it knows nothing about HTTP or
+    /// disk paths, so it serves an upload, a local file or a queue message alike.
     /// </summary>
     Task<string> ExtractTextAsync(Stream content, CancellationToken ct = default);
 }

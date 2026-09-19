@@ -1,16 +1,16 @@
 namespace LabDoc.Api.Models;
 
 /// <summary>
-/// Uma passada do 'map': uma chamada ao LLM que extrai UMA entidade do contrato.
+/// One 'map' pass: a single LLM call that extracts ONE entity of the contract.
 ///
-/// A ideia central da extracao e nao pedir o payload inteiro de uma vez. Cada
-/// passada leva so o schema da propria entidade e so as secoes que interessam,
-/// entao cada chamada e pequena, focada e verificavel isoladamente.
+/// The core idea of the extraction is not to ask for the whole payload at once.
+/// Each pass carries only its own entity schema and only the sections that matter,
+/// so every call stays small, focused and verifiable on its own.
 /// </summary>
-/// <param name="Name">Chave da entidade no envelope: "units", "parameters"...</param>
-/// <param name="Instruction">O que extrair, em linguagem natural.</param>
-/// <param name="JsonSchema">Fragmento de JSON Schema que restringe a saida.</param>
-/// <param name="Sections">Secoes da WI que alimentam o contexto. Vazio = documento inteiro.</param>
+/// <param name="Name">The entity key in the envelope: "units", "parameters"...</param>
+/// <param name="Instruction">What to extract, in natural language.</param>
+/// <param name="JsonSchema">The JSON Schema fragment that constrains the output.</param>
+/// <param name="Sections">Document sections that feed the context. Empty = whole document.</param>
 public sealed record ExtractionPass(
     string Name,
     string Instruction,

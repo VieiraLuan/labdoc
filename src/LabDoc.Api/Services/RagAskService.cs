@@ -12,7 +12,7 @@ public sealed class RagAskService : IRagAsk
     private const int MaxTopK = 20;
 
     private const string NoResultsAnswer =
-        "Nao encontrei nada nos documentos indexados para responder a essa pergunta.";
+        "I could not find anything in the indexed documents to answer that question.";
 
     private readonly IEmbeddingService _embeddingService;
     private readonly IVectorStore _vectorStore;
@@ -35,7 +35,7 @@ public sealed class RagAskService : IRagAsk
         _logger = logger;
 
         _systemPrompt = configuration["Rag:SystemPrompt"]
-            ?? throw new InvalidOperationException("Rag:SystemPrompt nao configurado.");
+            ?? throw new InvalidOperationException("Rag:SystemPrompt is not configured.");
         _defaultTopK = configuration.GetValue("Rag:TopK", 4);
     }
 
@@ -75,7 +75,7 @@ public sealed class RagAskService : IRagAsk
         }
 
         _logger.LogInformation(
-            "Pergunta respondida com {Count} trechos (melhor score {Score:F4}).",
+            "Question answered from {Count} excerpts (best score {Score:F4}).",
             hits.Count, hits[0].Score);
 
         return new AskResponse(answer, sources, effectiveTopK);

@@ -1,7 +1,7 @@
 namespace LabDoc.Api.Models;
 
 /// <summary>
-/// Uma secao numerada da Work Instruction ("8", "11.2"), com o texto dela.
-/// O numero e o que alimenta o campo _source.section do payload de master data.
+/// A numbered section of the Work Instruction ("8", "11.2") with its text.
+/// The number is what feeds the _source.section field of the master data payload.
 /// </summary>
 public sealed record DocumentSection(string Number, string Title, string Text);

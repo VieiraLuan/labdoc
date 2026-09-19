@@ -1,9 +1,9 @@
 namespace LabDoc.Api.DTOs.Response;
 
 /// <summary>
-/// Um trecho recuperado do Qdrant que sustentou a resposta.
-/// Devolver isto e o que permite auditar se o LLM respondeu pelo documento
-/// ou pela propria memoria.
+/// An excerpt retrieved from Qdrant that backed the answer.
+/// Returning these is what makes it auditable whether the LLM answered from the
+/// document or from its own memory.
 /// </summary>
 public sealed record AskSource(
     string FileName,

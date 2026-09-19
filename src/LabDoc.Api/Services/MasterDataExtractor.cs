@@ -10,17 +10,17 @@ using LabDoc.Api.Models;
 namespace LabDoc.Api.Services;
 
 /// <summary>
-/// Extrai o payload de master data de uma Work Instruction.
+/// Extracts the master data payload of a Work Instruction.
 ///
-/// Isto NAO e RAG. No RAG a busca escolhe alguns trechos de um corpus grande;
-/// aqui o documento ja esta escolhido e queremos o conteudo INTEIRO dele, entao
-/// nao ha embedding nem busca vetorial no caminho. O padrao e map-reduce:
+/// This is NOT RAG. In RAG the search picks a few excerpts out of a large corpus;
+/// here the document is already chosen and we want ALL of its content, so there
+/// is no embedding and no vector search on this path. The pattern is map-reduce:
 ///
-///   map    -> uma chamada ao LLM por entidade do contrato (MasterDataPasses)
-///   reduce -> este servico monta o envelope e valida contra o JSON Schema
+///   map    -> one LLM call per entity of the contract (MasterDataPasses)
+///   reduce -> this service assembles the envelope and validates it against the schema
 ///
-/// Cada passada leva so o proprio fragmento de schema, o que mantem cada chamada
-/// pequena e permite que uma falhe sem derrubar as outras.
+/// Each pass carries only its own schema fragment, which keeps every call small
+/// and lets one fail without taking the others down.
 /// </summary>
 public sealed class MasterDataExtractor : IMasterDataExtractor
 {
@@ -52,7 +52,7 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
         _logger = logger;
 
         _systemPrompt = configuration["Extraction:SystemPrompt"]
-            ?? throw new InvalidOperationException("Extraction:SystemPrompt nao configurado.");
+            ?? throw new InvalidOperationException("Extraction:SystemPrompt is not configured.");
         _maxContextChars = configuration.GetValue("Extraction:MaxContextChars", 24000);
         _contractSchema = schema.Schema;
     }
@@ -65,15 +65,15 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
         var startedAt = Stopwatch.GetTimestamp();
 
         var document = await _documentStore.FindByIdAsync(documentId, ct)
-            ?? throw new InvalidOperationException($"Documento {documentId} nao encontrado.");
+            ?? throw new InvalidOperationException($"Document {documentId} was not found.");
 
         var text = await _documentStore.GetFullTextAsync(documentId, ct);
 
         if (string.IsNullOrWhiteSpace(text))
         {
             throw new InvalidOperationException(
-                $"O documento {documentId} nao tem texto completo salvo. " +
-                "Ele foi ingerido antes da coluna full_text existir: re-ingira com force=true.");
+                $"Document {documentId} has no full text stored. " +
+                "It was ingested before the full_text column existed: re-ingest with force=true.");
         }
 
         var sections = _parser.Parse(text);
@@ -85,10 +85,10 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
             {
                 ["extractedAt"] = DateTimeOffset.UtcNow.ToString("O"),
                 ["extractor"] = ExtractorName,
-                // Nada mais aqui: o contrato declara additionalProperties:false
-                // em source, entao campo extra reprova o payload inteiro.
+                // Nothing else here: the contract declares additionalProperties:false
+                // on source, so an extra field fails the whole payload.
             },
-            // validateOnly: este payload e para revisao humana, nao para escrita.
+            // validateOnly: this payload is for human review, not for writing.
             ["options"] = new JsonObject
             {
                 ["mode"] = "validateOnly",
@@ -115,7 +115,7 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
         var seconds = Stopwatch.GetElapsedTime(startedAt).TotalSeconds;
 
         _logger.LogInformation(
-            "Extracao de {File} concluida em {Seconds:F1}s: {Passes} passadas, schema valido={Valid}.",
+            "Extraction of {File} finished in {Seconds:F1}s: {Passes} passes, schema valid={Valid}.",
             document.FileName, seconds, results.Count, schemaValid);
 
         return new ExtractionResponse(
@@ -154,10 +154,10 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
                 _systemPrompt, userPrompt, pass.Name, pass.JsonSchema, ct);
 
             var node = JsonNode.Parse(json)
-                ?? throw new InvalidOperationException("O modelo devolveu JSON vazio.");
+                ?? throw new InvalidOperationException("The model returned empty JSON.");
 
-            // A passada "source" devolve o objeto de metadados direto; as outras
-            // devolvem { "<nome>": [...] } por causa da exigencia de raiz-objeto.
+            // The "source" pass returns the metadata object directly; the others
+            // return { "<name>": [...] } because the root must be an object.
             if (pass.Name == "source")
             {
                 Merge((JsonObject)payload["source"]!, node.AsObject());
@@ -171,15 +171,15 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
             var seconds = Stopwatch.GetElapsedTime(startedAt).TotalSeconds;
 
             _logger.LogInformation(
-                "Passada '{Pass}': {Count} itens em {Seconds:F1}s.", pass.Name, count, seconds);
+                "Pass '{Pass}': {Count} items in {Seconds:F1}s.", pass.Name, count, seconds);
 
             return new ExtractionPassResult(pass.Name, count, seconds, Error: null);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            // Uma passada que falha nao derruba as outras: o payload sai
-            // incompleto e o erro fica visivel na resposta, para revisao.
-            _logger.LogError(ex, "Passada '{Pass}' falhou.", pass.Name);
+            // A failing pass does not take the others down: the payload comes out
+            // incomplete and the error stays visible in the response, for review.
+            _logger.LogError(ex, "Pass '{Pass}' failed.", pass.Name);
 
             return new ExtractionPassResult(
                 pass.Name, 0, Stopwatch.GetElapsedTime(startedAt).TotalSeconds, ex.Message);
@@ -187,9 +187,9 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
     }
 
     /// <summary>
-    /// Monta o contexto da passada. Se as secoes pedidas existirem, manda so elas
-    /// (chamada menor, menos ruido); senao cai para o documento inteiro, porque
-    /// perder informacao e pior do que gastar tokens.
+    /// Builds the context for a pass. If the requested sections exist, it sends only
+    /// those (smaller call, less noise); otherwise it falls back to the whole document,
+    /// because losing information is worse than spending tokens.
     /// </summary>
     private string BuildContext(ExtractionPass pass, IReadOnlyList<DocumentSection> sections, string fullText)
     {
@@ -223,7 +223,7 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
     private static int CountItems(JsonNode? node) => node switch
     {
         JsonArray array => array.Count,
-        // references e um objeto de arrays: conta os itens de todas elas.
+        // references is an object of arrays: count the items across all of them.
         JsonObject obj => obj.Sum(p => p.Value is JsonArray inner ? inner.Count : 1),
         _ => 0,
     };
@@ -235,7 +235,7 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
             return (true, []);
         }
 
-        // O JsonSchema.Net avalia sobre JsonElement, nao sobre JsonNode.
+        // JsonSchema.Net evaluates over JsonElement, not over JsonNode.
         using var document = JsonDocument.Parse(payload.ToJsonString());
 
         var results = _contractSchema.Evaluate(document.RootElement, new EvaluationOptions

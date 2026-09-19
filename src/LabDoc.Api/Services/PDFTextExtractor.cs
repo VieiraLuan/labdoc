@@ -16,7 +16,7 @@ public sealed class PDFTextExtractor(ILogger<PDFTextExtractor> logger) : IPDFTex
 
         if (buffer.Length == 0)
         {
-            throw new InvalidOperationException("O arquivo enviado esta vazio.");
+            throw new InvalidOperationException("The uploaded file is empty.");
         }
 
         using var document = PdfDocument.Open(buffer);
@@ -48,10 +48,10 @@ public sealed class PDFTextExtractor(ILogger<PDFTextExtractor> logger) : IPDFTex
         if (string.IsNullOrWhiteSpace(text))
         {
             throw new InvalidOperationException(
-                $"Nenhum texto extraido das {pageCount} paginas. O PDF provavelmente e digitalizado (imagem) e exigiria OCR.");
+                $"No text extracted from {pageCount} pages. The PDF is probably scanned (image only) and would need OCR.");
         }
 
-        logger.LogInformation("PDF lido: {Pages} paginas, {Chars} caracteres.", pageCount, text.Length);
+        logger.LogInformation("PDF read: {Pages} pages, {Chars} characters.", pageCount, text.Length);
 
         return text;
     }

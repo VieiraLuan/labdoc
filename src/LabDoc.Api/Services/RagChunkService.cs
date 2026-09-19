@@ -18,13 +18,13 @@ public partial class RagChunkService : IRagChunkService
         if (_chunkSize <= MinChunkLength)
         {
             throw new InvalidOperationException(
-                $"Rag:ChunkSize deve ser maior que {MinChunkLength}. Valor atual: {_chunkSize}.");
+                $"Rag:ChunkSize must be greater than {MinChunkLength}. Current value: {_chunkSize}.");
         }
 
         if (_chunkOverlap < 0 || _chunkOverlap >= _chunkSize)
         {
             throw new InvalidOperationException(
-                $"Rag:ChunkOverlap deve estar entre 0 e {_chunkSize - 1}. Valor atual: {_chunkOverlap}.");
+                $"Rag:ChunkOverlap must be between 0 and {_chunkSize - 1}. Current value: {_chunkOverlap}.");
         }
     }
 

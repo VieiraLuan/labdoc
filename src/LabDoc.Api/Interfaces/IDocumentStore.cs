@@ -19,8 +19,8 @@ public interface IDocumentStore
 
     Task<DocumentRecord?> FindByIdAsync(Guid id, CancellationToken ct = default);
 
-    // A extracao precisa do documento INTEIRO. No RAG o texto so existe fatiado
-    // no Qdrant, e remontar a partir dos chunks duplicaria as regioes de overlap.
+    // Extraction needs the WHOLE document. On the RAG path the text only exists
+    // sliced in Qdrant, and rebuilding it from chunks would duplicate the overlaps.
     Task SaveFullTextAsync(Guid documentId, string text, CancellationToken ct = default);
 
     Task<string?> GetFullTextAsync(Guid documentId, CancellationToken ct = default);

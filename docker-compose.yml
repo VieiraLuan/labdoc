@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: rag
       POSTGRES_PASSWORD: rag
     ports:
-      - "5434:5432"          # 5434 no host: o stack rag-luan-learning ja usa 5433
+      - "5434:5432"          # 5434 on the host to avoid clashing with a local postgres
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -21,7 +21,7 @@ services:
     container_name: labdoc-qdrant
     ports:
       - "6335:6333"          # REST + dashboard
-      - "6336:6334"          # gRPC (e o que o Qdrant.Client usa)
+      - "6336:6334"          # gRPC (what Qdrant.Client uses)
     volumes:
       - qdrantdata:/qdrant/storage
 
@@ -30,13 +30,13 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: labdoc-api
-    profiles: ["api"]        # so sobe com --profile api
+    profiles: ["api"]        # only starts with --profile api
     ports:
       - "8081:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: "8080"
-      # __ vira ":" na configuracao do .NET — sobrescreve o appsettings.json
+      # __ becomes ":" in .NET configuration — overrides appsettings.json
       ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=labdoc;Username=rag;Password=rag"
       Qdrant__Host: "qdrant"
       Qdrant__Port: "6334"
@@ -57,9 +57,9 @@ services:
     ports:
       - "4301:8080"
     environment:
-      # Para onde o nginx encaminha /api.
-      #   dotnet run no host  -> host.docker.internal:5277
-      #   API no compose      -> api:8080  (suba com --profile api)
+      # Where nginx forwards /api.
+      #   dotnet run on the host -> host.docker.internal:5277
+      #   API in compose         -> api:8080  (start with --profile api)
       API_UPSTREAM: "api:8080"
     extra_hosts:
       - "host.docker.internal:host-gateway"

@@ -5,17 +5,17 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
-    # SPA: qualquer rota desconhecida devolve o index.html.
+    # SPA: any unknown route falls back to index.html.
     location / {
         try_files $uri $uri/ /index.html;
     }
 
-    # Proxy para a API .NET. O browser so fala com esta origem,
-    # entao nao existe CORS envolvido.
+    # Proxy to the .NET API. The browser only ever talks to this origin,
+    # so CORS never comes into play.
     location /api/ {
-        # Resolver do Docker + upstream em variavel: o nginx passa a resolver o
-        # nome no momento do request, e nao na subida. Sem isso ele morre com
-        # "host not found in upstream" se a API ainda nao existir.
+        # Docker's resolver plus the upstream in a variable: nginx resolves the
+        # name at request time instead of at startup. Without this it dies with
+        # "host not found in upstream" when the API is not up yet.
         resolver           127.0.0.11 ipv6=off valid=10s;
         set $upstream      ${API_UPSTREAM};
         proxy_pass         http://$upstream$request_uri;
@@ -24,7 +24,7 @@ server {
         proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header   X-Forwarded-Proto $scheme;
 
-        # Ingest sobe PDF grande e pode levar minutos.
+        # Ingest uploads large PDFs, and extraction can run for minutes.
         client_max_body_size 100m;
         proxy_read_timeout   1800s;
         proxy_send_timeout   1800s;

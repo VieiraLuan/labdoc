@@ -1,7 +1,7 @@
 namespace LabDoc.Api.DTOs.Response;
 
 /// <summary>
-/// Resultado de POST /api/v1/ingest.
+/// Result of POST /api/v1/ingest.
 /// </summary>
 public sealed record IngestResponse(
     Guid DocumentId,

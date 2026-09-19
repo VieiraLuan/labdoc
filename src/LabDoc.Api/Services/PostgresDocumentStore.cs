@@ -25,8 +25,8 @@ public sealed class PostgresDocumentStore : IDocumentStore
             updated_at       timestamptz NOT NULL DEFAULT now()
         );
 
-        -- CREATE TABLE IF NOT EXISTS nao evolui tabela existente: as colunas novas
-        -- precisam ser adicionadas explicitamente. Em producao isso seria migration.
+        -- CREATE TABLE IF NOT EXISTS does not evolve an existing table: new columns
+        -- must be added explicitly. In production this would be a migration.
         ALTER TABLE documents ADD COLUMN IF NOT EXISTS chunk_size    integer NOT NULL DEFAULT 0;
         ALTER TABLE documents ADD COLUMN IF NOT EXISTS chunk_overlap integer NOT NULL DEFAULT 0;
         ALTER TABLE documents ADD COLUMN IF NOT EXISTS full_text     text    NULL;
@@ -49,7 +49,7 @@ public sealed class PostgresDocumentStore : IDocumentStore
         await using var command = _dataSource.CreateCommand(Schema);
         await command.ExecuteNonQueryAsync(ct);
 
-        _logger.LogInformation("Schema de documents garantido.");
+        _logger.LogInformation("documents schema ensured.");
     }
 
     public async Task<DocumentRecord?> FindByContentHashAsync(string contentHash, CancellationToken ct = default)
@@ -128,14 +128,14 @@ public sealed class PostgresDocumentStore : IDocumentStore
         await command.ExecuteNonQueryAsync(ct);
 
         _logger.LogInformation(
-            "Documento {Id} salvo: {File}, {Chunks} chunks, status={Status}.",
+            "Document {Id} saved: {File}, {Chunks} chunks, status={Status}.",
             document.Id, document.FileName, document.ChunkCount, document.Status);
     }
 
     public async Task<IReadOnlyList<DocumentSummary>> ListSummariesAsync(CancellationToken ct = default)
     {
-        // full_text pode ter megabytes: nunca traga a coluna para uma listagem,
-        // so a informacao de que ela esta preenchida.
+        // full_text can be megabytes: never pull the column into a listing,
+        // only the fact that it is filled.
         const string sql = """
             SELECT id, file_name, description, source_system, character_count, chunk_count,
                    embedding_model, collection_name, chunk_size, chunk_overlap, status,

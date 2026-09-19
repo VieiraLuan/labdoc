@@ -17,7 +17,7 @@ public sealed class ChatService : IChatService
     {
         _logger = logger;
         _model = configuration["Llm:ChatModel"]
-            ?? throw new InvalidOperationException("Llm:ChatModel nao configurado.");
+            ?? throw new InvalidOperationException("Llm:ChatModel is not configured.");
 
         _temperature = configuration.GetValue("Llm:Temperature", 0.1f);
 
@@ -52,7 +52,7 @@ public sealed class ChatService : IChatService
     {
         if (string.IsNullOrWhiteSpace(userPrompt))
         {
-            throw new ArgumentException("O prompt do usuario esta vazio.", nameof(userPrompt));
+            throw new ArgumentException("The user prompt is empty.", nameof(userPrompt));
         }
 
         ChatMessage[] messages =
@@ -82,12 +82,12 @@ public sealed class ChatService : IChatService
         if (completion.FinishReason == ChatFinishReason.Length)
         {
             _logger.LogWarning(
-                "A resposta de {Model} foi truncada por limite de tokens ({Max}).",
+                "The response from {Model} was truncated by the token limit ({Max}).",
                 _model, _maxOutputTokens);
         }
 
         _logger.LogInformation(
-            "{Model} respondeu em {Elapsed:F1}s: {In} tokens de entrada, {Out} de saida.",
+            "{Model} replied in {Elapsed:F1}s: {In} input tokens, {Out} output.",
             _model, elapsed.TotalSeconds,
             completion.Usage?.InputTokenCount, completion.Usage?.OutputTokenCount);
 

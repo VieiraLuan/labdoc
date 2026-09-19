@@ -21,8 +21,8 @@ builder.Services.AddScoped<IRagChunkService, RagChunkService>();
 //Extractors
 builder.Services.AddScoped<IPDFTextExtractor, PDFTextExtractor>();
 
-//Extracao de master data (nao usa embedding nem busca vetorial: e map-reduce
-//sobre o documento inteiro, nao retrieval sobre um corpus).
+//Master data extraction (no embeddings and no vector search: it is map-reduce
+//over the whole document, not retrieval over a corpus).
 builder.Services.AddSingleton<IWorkInstructionParser, WorkInstructionParser>();
 builder.Services.AddSingleton<MasterDataSchema>();
 builder.Services.AddScoped<IMasterDataExtractor, MasterDataExtractor>();
@@ -32,9 +32,9 @@ builder.Services.AddSingleton(sp =>
 {
     var configuration = sp.GetRequiredService<IConfiguration>();
     var endpoint = configuration["Llm:Endpoint"]
-        ?? throw new InvalidOperationException("Llm:Endpoint nao configurado.");
+        ?? throw new InvalidOperationException("Llm:Endpoint is not configured.");
     var apiKey = configuration["Llm:ApiKey"]
-        ?? throw new InvalidOperationException("Llm:ApiKey nao configurado.");
+        ?? throw new InvalidOperationException("Llm:ApiKey is not configured.");
 
     return new OpenAIClient(new ApiKeyCredential(apiKey), new OpenAIClientOptions
     {
@@ -59,7 +59,7 @@ builder.Services.AddSingleton<IVectorStore, QdrantVectorStore>();
 builder.Services.AddSingleton(sp =>
 {
     var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Postgres")
-        ?? throw new InvalidOperationException("ConnectionStrings:Postgres nao configurado.");
+        ?? throw new InvalidOperationException("ConnectionStrings:Postgres is not configured.");
     return NpgsqlDataSource.Create(connectionString);
 });
 
