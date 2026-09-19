@@ -148,15 +148,6 @@ Things worth opening if you read code:
 | UI | Angular 22, standalone components + signals |
 | Validation | JsonSchema.Net |
 
-Measured on an M-series Mac, 24 GB, models running locally:
-
-| | |
-|---|---|
-| Ingest, 135-page manual | 231,668 chars → 343 chunks → 343 vectors, ~60 s |
-| Re-ingest of the same file | **60.10 s → 0.04 s** |
-| Cross-lingual retrieval | question in Portuguese, document in English → 0.6798 on the correct chunk |
-| Extraction, sample procedure | 4 passes, 125 s, schema valid |
-
 ## License
 
 MIT
