@@ -1,0 +1,60 @@
+WI-CHM-001  Determination of Water Content by Coulometric Karl Fischer Titration
+Version 3.0    Effective date: 2026-01-15    Department: Chemistry Lab
+
+1 PURPOSE
+This Work Instruction describes the determination of water content in solid and
+liquid samples by coulometric Karl Fischer titration.
+
+2 SCOPE
+Applies to raw materials, in-process samples and finished product samples.
+
+3 RESPONSIBILITIES
+The analyst performs the test. A second qualified analyst reviews the result.
+Calculated values may not be overridden by the analyst.
+
+4 EQUIPMENT
+Coulometric Karl Fischer titrator, model KF-1000. Analytical balance, 0.01 mg
+readability. Drying oven capable of 105 C.
+
+5 REAGENTS
+Karl Fischer anolyte reagent. Karl Fischer catholyte reagent. Sodium tartrate
+dihydrate certified reference standard. Anhydrous methanol.
+
+6 SAFETY
+WARNING: Karl Fischer reagents contain methanol and iodine. Wear nitrile gloves,
+safety goggles and a lab coat. Work in a fume hood. Do not breathe vapours.
+
+7 PROCEDURE
+7.1 Condition the titration cell until the drift is stable.
+7.2 Record the cell drift in ug/min.
+7.3 Weigh the sample directly into the titration vessel.
+7.4 Start the titration and record the water found in ug.
+7.5 Repeat for a total of three replicates.
+
+8 PARAMETERS
+Cell drift, unit ug/min, numeric, format 0.0, 1 replicate, mandatory yes.
+Sample mass, unit mg, numeric, format 0.0000, 3 replicates, mandatory yes.
+Water found, unit ug, numeric, format 0.0, 3 replicates, mandatory yes.
+Water content, unit percent, calculated, format 0.000, 3 replicates, mandatory yes.
+Mean water content, unit percent, calculated as the average of the replicates.
+RSD of water content, unit percent, calculated as the relative standard deviation.
+Analyst comment, text, optional.
+
+9 CALCULATIONS
+9.1 Water content percent equals water found in ug divided by sample mass in mg,
+divided by ten thousand, multiplied by one hundred.
+9.2 The mean is the arithmetic average of the three replicate water content values.
+9.3 The RSD is the standard deviation of the replicates divided by the mean,
+multiplied by one hundred.
+9.4 The product specific release limit, where one exists, is read from the
+product master record and overrides the default specification.
+
+10 REPORTING
+Report the mean water content rounded to three decimal places.
+
+11 LIMITS
+System suitability: cell drift must be less than or equal to 15.0 ug/min. Not OOS generating.
+System suitability: RSD of water content must be less than or equal to 2.0 percent. Not OOS generating.
+Release limit: mean water content must be greater than or equal to 0.100 percent
+and less than or equal to 0.500 percent. OOS generating yes.
+Alert limit: mean water content greater than 0.450 percent triggers a warning. Not OOS generating.

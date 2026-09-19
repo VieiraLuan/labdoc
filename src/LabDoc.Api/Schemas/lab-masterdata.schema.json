@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://labdoc.dev/schemas/lab-masterdata/v1",
+  "title": "Laboratory master data payload",
+  "description": "Output contract of the Work Instruction extractor: the master data needed to run a laboratory test, extracted from an unstructured procedure document.",
+  "type": "object",
+  "required": ["$contract", "source", "options"],
+  "additionalProperties": false,
+
+  "$defs": {
+    "provenance": {
+      "type": "object",
+      "description": "Where in the source document this item came from.",
+      "properties": {
+        "section": { "type": "string" },
+        "row": { "type": "string" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "flag": { "type": "string", "enum": ["Y", "N"] },
+    "versionStatus": { "type": "string", "enum": ["P", "A", "C", "E"] },
+    "operator": { "type": "string", "enum": ["<", "<=", "=", ">=", ">", "In", "Not In", "Out"] },
+    "reference": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "policy": { "type": "string", "enum": ["require", "create", "ignore"] }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "properties": {
+    "$contract": { "const": "lab.masterdata.payload/v1" },
+
+    "source": {
+      "type": "object",
+      "description": "Provenance of the extraction, so every record traces back to a document version.",
+      "required": ["extractedAt", "extractor"],
+      "properties": {
+        "documentId": { "type": "string" },
+        "documentVersion": { "type": "string" },
+        "documentTitle": { "type": "string" },
+        "effectiveDate": { "type": "string" },
+        "extractedAt": { "type": "string" },
+        "extractor": { "type": "string" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+
+    "options": {
+      "type": "object",
+      "description": "How a downstream consumer should apply this payload.",
+      "properties": {
+        "mode": { "type": "string", "enum": ["validateOnly", "create", "createOrUpdate"] },
+        "onExisting": { "type": "string", "enum": ["fail", "skip", "newVersion"] },
+        "onMissingReference": { "type": "string", "enum": ["fail", "create"] },
+        "separator": { "type": "string", "minLength": 1, "maxLength": 1 }
+      },
+      "additionalProperties": false
+    },
+
+    "units": {
+      "type": "array",
+      "description": "Units of measure referenced by the parameters and limits.",
+      "items": {
+        "type": "object",
+        "required": ["unitId"],
+        "properties": {
+          "unitId": { "type": "string" },
+          "unitDesc": { "type": "string" },
+          "activeFlag": { "$ref": "#/$defs/flag" },
+          "_source": { "$ref": "#/$defs/provenance" }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "parameters": {
+      "type": "array",
+      "description": "Distinct measured or calculated quantities. Replicate statistics are NOT parameters.",
+      "items": {
+        "type": "object",
+        "required": ["parameterId"],
+        "properties": {
+          "parameterId": { "type": "string" },
+          "parameterDesc": { "type": "string" },
+          "activeFlag": { "$ref": "#/$defs/flag" },
+          "_source": { "$ref": "#/$defs/provenance" }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "limitTypes": {
+      "type": "array",
+      "description": "Kinds of limit a result can be judged against (release, alert, system suitability...).",
+      "items": {
+        "type": "object",
+        "required": ["limitTypeId"],
+        "properties": {
+          "limitTypeId": { "type": "string" },
+          "limitTypeDesc": { "type": "string" },
+          "appliesTo": { "type": "string", "enum": ["Parameter", "Specification"] },
+          "condition": { "type": "string" },
+          "_source": { "$ref": "#/$defs/provenance" }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "parameterLists": {
+      "type": "array",
+      "description": "The data entry template: which parameters are captured, in what order, with what type.",
+      "items": {
+        "type": "object",
+        "required": ["parameterListId", "items"],
+        "properties": {
+          "parameterListId": { "type": "string" },
+          "versionId": { "type": "string" },
+          "parameterListDesc": { "type": "string" },
+          "versionStatus": { "$ref": "#/$defs/versionStatus" },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["parameterId", "parameterType", "dataType"],
+              "properties": {
+                "parameterId": { "type": "string" },
+                "parameterType": {
+                  "type": "string",
+                  "description": "Standard is the measured value; the others are derived from replicates of the SAME parameter.",
+                  "enum": ["Standard", "Average", "StandardDeviation", "%RSD", "Maximum", "Minimum", "Range"]
+                },
+                "dataType": {
+                  "type": "string",
+                  "description": "N numeric, NC numeric calculated, T text, TC text calculated, D date, R reference list, S lookup.",
+                  "enum": ["N", "NC", "T", "TC", "D", "DC", "R", "S"]
+                },
+                "displayUnit": { "type": "string" },
+                "displayFormat": { "type": "string" },
+                "numReplicates": { "type": "integer", "minimum": 1 },
+                "mandatoryFlag": { "$ref": "#/$defs/flag" },
+                "calcRule": { "type": "string" },
+                "userSequence": { "type": "integer" },
+                "_source": { "$ref": "#/$defs/provenance" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "_source": { "$ref": "#/$defs/provenance" }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "specifications": {
+      "type": "array",
+      "description": "The numeric limits a result is judged against.",
+      "items": {
+        "type": "object",
+        "required": ["specificationId", "parameterLimits"],
+        "properties": {
+          "specificationId": { "type": "string" },
+          "versionId": { "type": "string" },
+          "specificationDesc": { "type": "string" },
+          "oosGeneratingFlag": {
+            "$ref": "#/$defs/flag",
+            "description": "Y when a failure is a formal out-of-specification event."
+          },
+          "versionStatus": { "$ref": "#/$defs/versionStatus" },
+          "useType": { "type": "string", "enum": ["Customer", "Regulatory", "Internal", "Other"] },
+          "parameterLimits": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["parameterId", "limitTypeId", "operator1", "value1"],
+              "properties": {
+                "parameterId": { "type": "string" },
+                "parameterType": { "type": "string" },
+                "limitTypeId": { "type": "string" },
+                "operator1": { "$ref": "#/$defs/operator" },
+                "value1": { "type": "string" },
+                "operator2": { "$ref": "#/$defs/operator" },
+                "value2": { "type": "string" },
+                "_source": { "$ref": "#/$defs/provenance" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "_source": { "$ref": "#/$defs/provenance" }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "testMethods": {
+      "type": "array",
+      "description": "The test itself: what it applies to and how it is scheduled.",
+      "items": {
+        "type": "object",
+        "required": ["testMethodId"],
+        "properties": {
+          "testMethodId": { "type": "string" },
+          "versionId": { "type": "string" },
+          "testMethodDesc": { "type": "string" },
+          "departmentId": { "type": "string" },
+          "applicableSampleTypeId": { "type": "string" },
+          "destructiveTestFlag": { "$ref": "#/$defs/flag" },
+          "quantity": { "type": "string" },
+          "quantityUnit": { "type": "string" },
+          "versionStatus": { "$ref": "#/$defs/versionStatus" },
+          "_source": { "$ref": "#/$defs/provenance" }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "references": {
+      "type": "object",
+      "description": "Master data the document mentions but this payload deliberately does not create.",
+      "properties": {
+        "sampleTypes": { "type": "array", "items": { "$ref": "#/$defs/reference" } },
+        "instrumentTypes": { "type": "array", "items": { "$ref": "#/$defs/reference" } },
+        "reagentTypes": { "type": "array", "items": { "$ref": "#/$defs/reference" } },
+        "departments": { "type": "array", "items": { "$ref": "#/$defs/reference" } }
+      },
+      "additionalProperties": false
+    },
+
+    "unresolved": {
+      "type": "array",
+      "description": "Human review queue. The anti-hallucination valve: anything meaningful that does not fit a field lands here instead of being invented.",
+      "items": {
+        "type": "object",
+        "required": ["text", "reason"],
+        "properties": {
+          "section": { "type": "string" },
+          "text": { "type": "string" },
+          "reason": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

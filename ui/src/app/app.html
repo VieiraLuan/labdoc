@@ -1,0 +1,18 @@
+<header>
+  <h1>LabDoc</h1>
+  <nav>
+    <button [class.active]="tab() === 'ingest'" (click)="select('ingest')">Ingest</button>
+    <button [class.active]="tab() === 'documents'" (click)="select('documents')">Documentos</button>
+    <button [class.active]="tab() === 'chat'" (click)="select('chat')">Perguntar (RAG)</button>
+    <button [class.active]="tab() === 'extract'" (click)="select('extract')">Extrair master data</button>
+  </nav>
+</header>
+
+<main>
+  @switch (tab()) {
+    @case ('ingest') { <app-ingest /> }
+    @case ('documents') { <app-documents /> }
+    @case ('chat') { <app-chat /> }
+    @case ('extract') { <app-extract /> }
+  }
+</main>

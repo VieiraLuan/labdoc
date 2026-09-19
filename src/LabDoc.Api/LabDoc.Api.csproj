@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
+    <PackageReference Include="JsonSchema.Net" Version="9.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
+    <PackageReference Include="Npgsql" Version="10.0.3" />
+    <PackageReference Include="OpenAI" Version="2.13.0" />
+    <PackageReference Include="Qdrant.Client" Version="1.19.0" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.17.2" />
+    <PackageReference Include="UglyToad.PdfPig" Version="1.7.0-custom-5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- O schema do contrato e lido em runtime para validar o payload extraido. -->
+    <Content Update="Schemas\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
