@@ -8,52 +8,52 @@ import { Api, IngestResponse } from './api';
   template: `
     <div class="grid">
       <section class="card">
-        <h2>Enviar documento</h2>
+        <h2>Upload document</h2>
 
         <label>Work Instruction (PDF)</label>
         <input type="file" accept=".pdf" (change)="onFile($event)" />
 
-        <label>Descricao</label>
+        <label>Description</label>
         <input type="text" [(ngModel)]="description" placeholder="Karl Fischer water content" />
 
-        <label>Sistema de origem</label>
+        <label>Source system</label>
         <input type="text" [(ngModel)]="sourceSystem" placeholder="work-instructions" />
 
         <label class="inline">
           <input type="checkbox" [(ngModel)]="force" />
-          Forcar reprocessamento (ignora o cache por hash)
+          Force reprocessing (bypass the content-hash cache)
         </label>
 
         <button (click)="send()" [disabled]="!file() || loading()">
-          {{ loading() ? 'Processando…' : 'Ingerir' }}
+          {{ loading() ? 'Processing…' : 'Ingest' }}
         </button>
 
         @if (loading()) {
-          <p class="hint">Extraindo o texto, chunkando e gerando embeddings. Alguns segundos por documento.</p>
+          <p class="hint">Extracting text, chunking and generating embeddings. A few seconds per document.</p>
         }
       </section>
 
       <section class="card">
-        <h2>Resultado</h2>
+        <h2>Result</h2>
 
         @if (error()) {
           <pre class="error">{{ error() }}</pre>
         } @else if (result(); as r) {
           <dl>
-            <dt>Documento</dt><dd class="mono">{{ r.documentId }}</dd>
-            <dt>Arquivo</dt><dd>{{ r.fileName }}</dd>
+            <dt>Document</dt><dd class="mono">{{ r.documentId }}</dd>
+            <dt>File</dt><dd>{{ r.fileName }}</dd>
             <dt>Chunks</dt><dd>{{ r.chunkCount }}</dd>
-            <dt>Pontos no Qdrant</dt><dd>{{ r.pointsCount }}</dd>
-            <dt>Reaproveitado</dt>
+            <dt>Points in Qdrant</dt><dd>{{ r.pointsCount }}</dd>
+            <dt>Reused</dt>
             <dd>
               <span class="badge" [class.yes]="r.reused" [class.no]="!r.reused">
-                {{ r.reused ? 'sim — nada foi reprocessado' : 'nao — vetores gerados agora' }}
+                {{ r.reused ? 'yes — nothing was reprocessed' : 'no — vectors generated now' }}
               </span>
             </dd>
-            <dt>Tempo</dt><dd>{{ elapsed() }} s</dd>
+            <dt>Time</dt><dd>{{ elapsed() }} s</dd>
           </dl>
         } @else {
-          <p class="hint">Nenhum envio ainda.</p>
+          <p class="hint">No upload yet.</p>
         }
       </section>
     </div>

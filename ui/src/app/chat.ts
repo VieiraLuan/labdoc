@@ -29,7 +29,7 @@ interface Turn {
 
               @if (turn.sources.length) {
                 <details class="sources">
-                  <summary>{{ turn.sources.length }} trechos recuperados</summary>
+                  <summary>{{ turn.sources.length }} retrieved chunks</summary>
 
                   @for (source of turn.sources; track $index) {
                     <div class="source">
@@ -39,8 +39,8 @@ interface Turn {
                         <span class="hint">#{{ source.chunkIndex }}</span>
                         <span class="score mono">{{ source.score | number: '1.4-4' }}</span>
                       </div>
-                      <!-- A barra e so uma leitura visual do cosseno (0 a 1).
-                           Como o teto real fica perto de 0.7, ela nunca enche. -->
+                      <!-- The bar is just a visual read of the cosine score (0 to 1).
+                           The practical ceiling sits near 0.7, so it never fills. -->
                       <div class="bar"><i [style.width.%]="source.score * 100"></i></div>
                       <p class="excerpt">{{ source.excerpt }}</p>
                     </div>
@@ -53,16 +53,16 @@ interface Turn {
           </div>
         } @empty {
           @if (!loading()) {
-            <p class="hint">Faca uma pergunta sobre os documentos ingeridos.</p>
+            <p class="hint">Ask a question about the ingested documents.</p>
           }
         }
 
-        <!-- O modelo local leva dezenas de segundos: sem este bloco a tela
-             fica parada e parece travada. -->
+        <!-- The local model takes tens of seconds: without this block the screen
+             sits still and looks frozen. -->
         @if (loading()) {
           <div class="turn pending">
             <p class="q">{{ pending() }}</p>
-            <div class="hint">consultando os documentos…</div>
+            <div class="hint">searching the documents…</div>
           </div>
         }
       </div>
@@ -72,10 +72,10 @@ interface Turn {
           type="text"
           [(ngModel)]="question"
           (keyup.enter)="send()"
-          placeholder="Qual o EPI necessario e qual o limite de drift da celula?" />
+          placeholder="What PPE is required, and what is the cell drift limit?" />
         <input type="number" [(ngModel)]="topK" min="1" max="20" class="topk" title="TopK" />
         <button (click)="send()" [disabled]="loading() || !question.trim()">
-          {{ loading() ? '…' : 'Perguntar' }}
+          {{ loading() ? '…' : 'Ask' }}
         </button>
       </div>
     </div>
@@ -134,14 +134,14 @@ export class Chat {
     return ((performance.now() - started) / 1000).toFixed(2);
   }
 
-  // O ProblemDetails da API chega em err.error como objeto; um 502 do nginx
-  // chega como string. Os dois precisam virar texto legivel.
+  // The API's ProblemDetails arrives in err.error as an object; an nginx 502
+  // arrives as a string. Both have to become readable text.
   private describe(err: unknown): string {
     const error = (err as { error?: unknown; message?: string });
 
     if (typeof error.error === 'string') return error.error;
     if (error.error) return JSON.stringify(error.error, null, 2);
 
-    return error.message ?? 'Falha ao chamar a API.';
+    return error.message ?? 'Failed to call the API.';
   }
 }

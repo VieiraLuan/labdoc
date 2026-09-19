@@ -25,6 +25,11 @@ noticing**, and a plausible-but-incomplete payload is worse than an obviously br
 So the extraction pipeline uses no embeddings and no vector search at all. Same ingest, same
 storage, different orchestration.
 
+![Extraction tab: four passes over a work instruction, each bound to its own JSON Schema, assembled into a validated payload](docs/extract.png)
+
+*Four of the nine passes running over the sample work instruction. Each row is one LLM call; the
+payload on the right is assembled from all of them and validated against the contract.*
+
 ```
                     ┌─ PDF ─→ text ─→ full_text + sections ─→ Postgres
    ingest ──────────┤

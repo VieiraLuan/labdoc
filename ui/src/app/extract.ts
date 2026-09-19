@@ -21,23 +21,23 @@ const PASSES = [
   template: `
     <div class="grid">
       <section class="card">
-        <h2>Documento</h2>
+        <h2>Document</h2>
 
         @if (documents().length) {
-          <label>Work Instruction ingerida</label>
+          <label>Ingested Work Instruction</label>
           <select [(ngModel)]="documentId">
             @for (doc of documents(); track doc.id) {
               <option [value]="doc.id">{{ doc.fileName }} ({{ doc.characterCount }} chars)</option>
             }
           </select>
         } @else {
-          <p class="hint">Nenhum documento ingerido ainda. Use a aba Ingest primeiro.</p>
+          <p class="hint">No documents ingested yet. Use the Ingest tab first.</p>
         }
 
-        <label>Passadas</label>
+        <label>Passes</label>
         <p class="hint">
-          Cada passada e uma chamada ao LLM que extrai uma entidade. Rodar uma so
-          e o jeito de estudar o resultado sem esperar o documento inteiro.
+          Each pass is one LLM call that extracts a single entity. Running just one
+          is the way to inspect a result without waiting for the whole document.
         </p>
 
         <div class="passes">
@@ -50,41 +50,41 @@ const PASSES = [
         </div>
 
         <button (click)="run()" [disabled]="!documentId || loading() || !selected().size">
-          {{ loading() ? 'Extraindo…' : 'Extrair' }}
+          {{ loading() ? 'Extracting…' : 'Extract' }}
         </button>
 
         @if (loading()) {
           <p class="hint">
-            Uma chamada ao modelo por passada, com o schema amarrado. Modelo local:
-            conte dezenas de segundos por passada.
+            One model call per pass, each bound to its schema. On a local model,
+            expect tens of seconds per pass.
           </p>
         }
       </section>
 
       <section class="card">
-        <h2>Resultado</h2>
+        <h2>Result</h2>
 
         @if (error()) {
           <pre class="error">{{ error() }}</pre>
         } @else if (result(); as r) {
           <dl>
-            <dt>Arquivo</dt><dd>{{ r.fileName }}</dd>
-            <dt>Secoes</dt><dd>{{ r.sectionCount }}</dd>
+            <dt>File</dt><dd>{{ r.fileName }}</dd>
+            <dt>Sections</dt><dd>{{ r.sectionCount }}</dd>
             <dt>Schema</dt>
             <dd>
               <span class="badge" [class.yes]="r.schemaValid" [class.no]="!r.schemaValid">
-                {{ r.schemaValid ? 'valido' : r.schemaErrors.length + ' erro(s)' }}
+                {{ r.schemaValid ? 'valid' : r.schemaErrors.length + ' error(s)' }}
               </span>
             </dd>
-            <dt>Tempo</dt><dd>{{ r.seconds.toFixed(1) }} s</dd>
+            <dt>Time</dt><dd>{{ r.seconds.toFixed(1) }} s</dd>
           </dl>
 
-          <h2 style="margin-top:18px">Passadas</h2>
+          <h2 style="margin-top:18px">Passes</h2>
           <table class="passes-table">
             @for (pass of r.passes; track pass.name) {
               <tr [class.error]="!!pass.error">
                 <td class="mono">{{ pass.name }}</td>
-                <td>{{ pass.error ? '—' : pass.itemCount + ' itens' }}</td>
+                <td>{{ pass.error ? '—' : pass.itemCount + ' items' }}</td>
                 <td class="hint">{{ pass.seconds.toFixed(1) }} s</td>
               </tr>
               @if (pass.error) {
@@ -94,14 +94,14 @@ const PASSES = [
           </table>
 
           @if (r.schemaErrors.length) {
-            <h2 style="margin-top:18px">Erros de schema</h2>
+            <h2 style="margin-top:18px">Schema errors</h2>
             <pre class="error">{{ r.schemaErrors.join('\n') }}</pre>
           }
 
           <h2 style="margin-top:18px">Payload</h2>
           <pre>{{ pretty(r.payload) }}</pre>
         } @else {
-          <p class="hint">Nenhuma extracao ainda.</p>
+          <p class="hint">No extraction yet.</p>
         }
       </section>
     </div>
@@ -125,7 +125,7 @@ export class Extract {
         this.documents.set(docs);
         if (docs.length) this.documentId = docs[0].id;
       },
-      error: () => this.error.set('Falha ao listar os documentos.'),
+      error: () => this.error.set('Failed to list documents.'),
     });
   }
 
@@ -142,7 +142,7 @@ export class Extract {
     this.error.set('');
     this.result.set(null);
 
-    // Mantem a ordem canonica, nao a ordem em que o usuario clicou.
+    // Keeps the canonical order, not the order the user clicked in.
     const passes = this.allPasses.filter((pass) => this.selected().has(pass));
 
     this.api.extract(this.documentId, passes).subscribe({

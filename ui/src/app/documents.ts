@@ -8,35 +8,35 @@ import { Api, DocumentSummary } from './api';
   template: `
     <section class="card">
       <h2>
-        Documentos ingeridos
+        Ingested documents
         <button class="link" (click)="load()" [disabled]="loading()">
-          {{ loading() ? 'carregando…' : 'atualizar' }}
+          {{ loading() ? 'loading…' : 'refresh' }}
         </button>
       </h2>
 
       @if (error()) {
         <pre class="error">{{ error() }}</pre>
       } @else if (documents().length === 0 && !loading()) {
-        <p class="hint">Nenhum documento ingerido ainda.</p>
+        <p class="hint">No documents ingested yet.</p>
       } @else {
         <p class="hint">
-          {{ documents().length }} documento(s) · {{ totalChunks() | number }} chunks ·
-          {{ totalChars() | number }} caracteres
+          {{ documents().length }} document(s) · {{ totalChunks() | number }} chunks ·
+          {{ totalChars() | number }} characters
         </p>
 
         <div class="table-scroll">
           <table class="docs">
             <thead>
               <tr>
-                <th>Arquivo</th>
-                <th>Origem</th>
+                <th>File</th>
+                <th>Source</th>
                 <th class="num">Chars</th>
                 <th class="num">Chunks</th>
                 <th class="num">Chunk/Ovl</th>
-                <th>Modelo</th>
+                <th>Model</th>
                 <th>Status</th>
-                <th>Texto</th>
-                <th>Ingerido</th>
+                <th>Text</th>
+                <th>Ingested</th>
               </tr>
             </thead>
             <tbody>
@@ -58,10 +58,10 @@ import { Api, DocumentSummary } from './api';
                     <span class="badge" [class.yes]="doc.status === 'completed'">{{ doc.status }}</span>
                   </td>
                   <td>
-                    <!-- Sem full_text a aba de extracao nao consegue rodar:
-                         o documento foi ingerido antes da coluna existir. -->
+                    <!-- Without full_text the extraction tab cannot run: the
+                         document was ingested before that column existed. -->
                     <span class="badge" [class.yes]="doc.hasFullText" [class.no]="!doc.hasFullText">
-                      {{ doc.hasFullText ? 'completo' : 'so chunks' }}
+                      {{ doc.hasFullText ? 'full text' : 'chunks only' }}
                     </span>
                   </td>
                   <td class="hint">{{ doc.createdAt | date: 'dd/MM HH:mm' }}</td>
@@ -73,8 +73,8 @@ import { Api, DocumentSummary } from './api';
 
         @if (missingFullText() > 0) {
           <p class="hint" style="margin-top:12px">
-            ⚠ {{ missingFullText() }} documento(s) sem texto completo. Re-ingira com
-            <span class="mono">force</span> marcado para poder extrair master data deles.
+            ⚠ {{ missingFullText() }} document(s) without full text. Re-ingest with
+            <span class="mono">force</span> checked to extract master data from them.
           </p>
         }
       }
@@ -106,7 +106,7 @@ export class Documents {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(typeof err.error === 'string' ? err.error : (err.message ?? 'Falha ao listar.'));
+        this.error.set(typeof err.error === 'string' ? err.error : (err.message ?? 'Failed to list.'));
         this.loading.set(false);
       },
     });
