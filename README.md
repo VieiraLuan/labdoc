@@ -103,17 +103,16 @@ and every extraction is validated against it before it is returned.
 
 ## Measuring it
 
-A payload that looks plausible and is quietly incomplete is the failure mode that
-matters here, and no amount of reading output catches it. So extraction is scored
-against a hand-written expected payload:
+An incomplete payload still validates and still reads well, so reading the output
+does not catch it. Extraction is scored against a hand-written expected payload:
 
 ```bash
 docker compose --profile api up -d --build
 dotnet run --project tools/LabDoc.Eval -- --report docs/eval-report.json
 ```
 
-Every `samples/*.expected.json` is ingested, extracted and graded. Current result on
-the sample procedure, `qwen2.5:7b` running locally:
+Every `samples/*.expected.json` is ingested, extracted and graded. On the sample
+procedure, `qwen2.5:7b` running locally:
 
 | entity | recall | precision |
 |---|---|---|
@@ -127,18 +126,17 @@ the sample procedure, `qwen2.5:7b` running locally:
 | test methods | 100% | 100% |
 | **total** | **89%** | **80%** |
 
-**Recall is the metric that matters.** A parameter that was never extracted leaves a
-payload that still validates, still reads well, and is wrong. A wrong value is at
-least visible.
+Recall is the metric that matters: a parameter that was never extracted is invisible,
+a wrong value is not.
 
-### What the measurement changed
+### What it changed
 
-Independent LLM calls share no vocabulary: one pass emitted `CELL_DRIFT`, the next
-`KF_CELL_DRIFT` for the same parameter, and nothing downstream could join them. The
-fix was to feed each pass the identifiers earlier passes already produced. It is a
-switch, so the effect is measured rather than assumed — `Extraction:ChainPasses`:
+Independent LLM calls share no vocabulary — one pass emitted `CELL_DRIFT`, the next
+`KF_CELL_DRIFT` for the same parameter, and nothing could join them. So each pass now
+receives the identifiers the earlier passes produced. It is a switch,
+`Extraction:ChainPasses`, so the effect is measured rather than assumed:
 
-| | chaining off | chaining on |
+| | off | on |
 |---|---|---|
 | recall | 78% | **89%** |
 | precision | 70% | **80%** |
@@ -146,29 +144,23 @@ switch, so the effect is measured rather than assumed — `Extraction:ChainPasse
 | parameter limits, recall | 0% | **100%** |
 | specifications, recall | 50% | **0%** |
 
-Two things worth reading honestly in that table. Parameter limits went from nothing
-to everything: without the shared vocabulary the model put the *operator* in the
-limit type field (`less_than_or_equal` instead of `release_limit`). And
-specifications went the other way — chaining made that pass worse, not better.
+Parameter limits went from nothing to everything: without the shared vocabulary the
+model put the *operator* in the limit type field. Specifications went the other way —
+chaining made that pass worse.
 
-The harness also pays for itself outside the score. It surfaced a bug that had been
-hiding as slowness: the OpenAI SDK defaults to a 100 second network timeout and then
-retries four times, so a local model generating a nested schema was being killed
-mid-generation. One pass was failing after four attempts while the endpoint still
-returned HTTP 200 with an incomplete payload. Fixing the timeout took the slowest
-pass from 398s to 81s.
+The harness also found a bug hiding as slowness. The OpenAI SDK defaults to a 100
+second network timeout and four retries, so a local model generating a nested schema
+was killed mid-generation while the endpoint still returned HTTP 200 with an
+incomplete payload. Fixing the timeout took the slowest pass from 398s to 81s.
 
 ### Known failures
 
-Named, not hidden — they are what the next round of work targets:
-
-- **specifications, 0%** — the document has OOS and non-OOS limits, which is two
-  specifications because the flag lives on the specification. The model emits one per
-  limit instead. Conditional grouping is where a 7B model gives out.
-- **identifier drift, 21%** — the remaining matches found by label rather than by id.
-- **units expanded** — `ug/min` came back as `microgram per minute`, despite the
-  prompt forbidding normalisation. In a regulated context the document's unit is the
-  unit.
+- **specifications, 0%** — OOS and non-OOS limits are two specifications, because the
+  flag lives on the specification. The model emits one per limit. Conditional
+  grouping is where a 7B gives out.
+- **identifier drift, 21%** — matches found by label rather than by id.
+- **units expanded** — `ug/min` came back as `microgram per minute`, against an
+  explicit prompt rule. In a regulated context the document's unit is the unit.
 
 ## How it works
 
