@@ -148,20 +148,6 @@ Parameter limits went from nothing to everything: without the shared vocabulary 
 model put the *operator* in the limit type field. Specifications went the other way —
 chaining made that pass worse.
 
-The harness also found a bug hiding as slowness. The OpenAI SDK defaults to a 100
-second network timeout and four retries, so a local model generating a nested schema
-was killed mid-generation while the endpoint still returned HTTP 200 with an
-incomplete payload. Fixing the timeout took the slowest pass from 398s to 81s.
-
-### Known failures
-
-- **specifications, 0%** — OOS and non-OOS limits are two specifications, because the
-  flag lives on the specification. The model emits one per limit. Conditional
-  grouping is where a 7B gives out.
-- **identifier drift, 21%** — matches found by label rather than by id.
-- **units expanded** — `ug/min` came back as `microgram per minute`, against an
-  explicit prompt rule. In a regulated context the document's unit is the unit.
-
 ## How it works
 
 ```
