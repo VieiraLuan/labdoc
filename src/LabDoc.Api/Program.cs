@@ -36,9 +36,16 @@ builder.Services.AddSingleton(sp =>
     var apiKey = configuration["Llm:ApiKey"]
         ?? throw new InvalidOperationException("Llm:ApiKey is not configured.");
 
+    // The SDK defaults to a 100 second network timeout and then retries four
+    // times. A local model generating a deeply nested JSON Schema blows past that,
+    // so every attempt is killed mid-generation and the pass fails after ~7
+    // minutes of work. The timeout has to match how slow local inference really is.
+    var timeout = TimeSpan.FromSeconds(configuration.GetValue("Llm:TimeoutSeconds", 900));
+
     return new OpenAIClient(new ApiKeyCredential(apiKey), new OpenAIClientOptions
     {
-        Endpoint = new Uri(endpoint)
+        Endpoint = new Uri(endpoint),
+        NetworkTimeout = timeout,
     });
 });
 

@@ -36,6 +36,7 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
 
     private readonly string _systemPrompt;
     private readonly int _maxContextChars;
+    private readonly bool _chainPasses;
     private readonly JsonSchema? _contractSchema;
 
     public MasterDataExtractor(
@@ -54,6 +55,9 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
         _systemPrompt = configuration["Extraction:SystemPrompt"]
             ?? throw new InvalidOperationException("Extraction:SystemPrompt is not configured.");
         _maxContextChars = configuration.GetValue("Extraction:MaxContextChars", 24000);
+        // Switchable so the effect of chaining can be measured, not assumed:
+        // turn it off and the harness reports the plain map-reduce baseline.
+        _chainPasses = configuration.GetValue("Extraction:ChainPasses", true);
         _contractSchema = schema.Schema;
     }
 
@@ -142,10 +146,17 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
         {
             var context = BuildContext(pass, sections, fullText);
 
-            var userPrompt = new StringBuilder()
+            var builder = new StringBuilder()
                 .AppendLine(pass.Instruction)
-                .AppendLine()
-                .AppendLine("Documento:")
+                .AppendLine();
+
+            if (_chainPasses)
+            {
+                AppendVocabulary(builder, pass, payload);
+            }
+
+            var userPrompt = builder
+                .AppendLine("Document:")
                 .AppendLine()
                 .Append(context)
                 .ToString();
@@ -184,6 +195,87 @@ public sealed class MasterDataExtractor : IMasterDataExtractor
             return new ExtractionPassResult(
                 pass.Name, 0, Stopwatch.GetElapsedTime(startedAt).TotalSeconds, ex.Message);
         }
+    }
+
+    /// <summary>
+    /// Injects the identifiers earlier passes already produced, so this pass reuses
+    /// them instead of inventing its own.
+    ///
+    /// This is the seam that plain map-reduce lacks: independent calls share no
+    /// vocabulary, so the same parameter comes back as CELL_DRIFT from one pass and
+    /// KF_CELL_DRIFT from another, and nothing downstream can join them.
+    /// </summary>
+    private static void AppendVocabulary(StringBuilder builder, ExtractionPass pass, JsonObject payload)
+    {
+        if (pass.DependsOn is not { Count: > 0 })
+        {
+            return;
+        }
+
+        var lines = new List<string>();
+
+        foreach (var name in pass.DependsOn)
+        {
+            var values = Vocabulary(name, payload[name]);
+
+            if (values.Count > 0)
+            {
+                lines.Add($"  {name}: {string.Join(", ", values)}");
+            }
+        }
+
+        if (lines.Count == 0)
+        {
+            return;
+        }
+
+        builder
+            .AppendLine("Identifiers already extracted from THIS document. Reuse them exactly as")
+            .AppendLine("written, and never introduce a different name for the same thing:")
+            .AppendLine();
+
+        foreach (var line in lines)
+        {
+            builder.AppendLine(line);
+        }
+
+        builder.AppendLine();
+    }
+
+    private static IReadOnlyList<string> Vocabulary(string passName, JsonNode? extracted)
+    {
+        if (extracted is not JsonArray array)
+        {
+            return [];
+        }
+
+        // A parameter list is useful to the next pass as its rows, not as its own
+        // id: what specifications need is which parameter/type pairs exist.
+        if (passName == "parameterLists")
+        {
+            return array
+                .OfType<JsonObject>()
+                .SelectMany(list => list["items"] as JsonArray ?? [])
+                .OfType<JsonObject>()
+                .Select(item => $"{item["parameterId"]} ({item["parameterType"]})")
+                .Distinct()
+                .ToList();
+        }
+
+        var idField = MasterDataPasses.All.FirstOrDefault(p => p.Name == passName)?.IdField;
+
+        if (idField is null)
+        {
+            return [];
+        }
+
+        return array
+            .OfType<JsonObject>()
+            .Select(item => item[idField]?.ToString())
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Select(value => value!)
+            .Distinct()
+            .ToList();
     }
 
     /// <summary>

@@ -2,4 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/LabDoc.Api/LabDoc.Api.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/LabDoc.Eval/LabDoc.Eval.csproj" />
+  </Folder>
 </Solution>

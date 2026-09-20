@@ -11,8 +11,17 @@ namespace LabDoc.Api.Models;
 /// <param name="Instruction">What to extract, in natural language.</param>
 /// <param name="JsonSchema">The JSON Schema fragment that constrains the output.</param>
 /// <param name="Sections">Document sections that feed the context. Empty = whole document.</param>
+/// <param name="DependsOn">
+/// Passes whose identifiers are injected into this prompt as a shared vocabulary.
+/// Without it each pass invents its own names for the same thing — the measured
+/// failure mode of a plain map-reduce, where one pass emits CELL_DRIFT and the
+/// next KF_CELL_DRIFT for the same parameter.
+/// </param>
+/// <param name="IdField">The field other passes should reuse verbatim.</param>
 public sealed record ExtractionPass(
     string Name,
     string Instruction,
     string JsonSchema,
-    IReadOnlyList<string> Sections);
+    IReadOnlyList<string> Sections,
+    IReadOnlyList<string>? DependsOn = null,
+    string? IdField = null);

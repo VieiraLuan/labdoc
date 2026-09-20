@@ -1,0 +1,433 @@
+{
+  "documentId": "0f4a561c-d8ad-4b8d-9b96-7c83ec2dfa13",
+  "fileName": "WI-CHM-001.pdf",
+  "sectionCount": 18,
+  "payload": {
+    "$contract": "lab.masterdata.payload/v1",
+    "source": {
+      "extractedAt": "2026-09-20T01:19:23.2276851\u002B00:00",
+      "extractor": "labdoc-wi-extractor/0.1.0",
+      "documentId": "WI-CHM-001",
+      "documentTitle": "Determination of Water Content by Coulometric Karl Fischer Titration",
+      "documentVersion": "3.0",
+      "effectiveDate": "2026-01-15",
+      "confidence": 1
+    },
+    "options": {
+      "mode": "validateOnly",
+      "onExisting": "fail",
+      "onMissingReference": "fail",
+      "separator": "|"
+    },
+    "units": [
+      {
+        "unitId": "ug/min",
+        "unitDesc": "microgram per minute",
+        "_source": {
+          "section": "PARAMETERS",
+          "row": "1",
+          "confidence": 1
+        }
+      },
+      {
+        "unitId": "mg",
+        "unitDesc": "milligram",
+        "_source": {
+          "section": "PARAMETERS",
+          "row": "2",
+          "confidence": 1
+        }
+      },
+      {
+        "unitId": "ug",
+        "unitDesc": "microgram",
+        "_source": {
+          "section": "PARAMETERS",
+          "row": "3",
+          "confidence": 1
+        }
+      },
+      {
+        "unitId": "percent",
+        "unitDesc": "percent",
+        "_source": {
+          "section": "PARAMETERS",
+          "row": "4",
+          "confidence": 1
+        }
+      }
+    ],
+    "parameters": [
+      {
+        "parameterId": "KF_CELL_DRIFT",
+        "parameterDesc": "Cell drift",
+        "_source": {
+          "section": "8 PARAMETERS",
+          "row": ".1",
+          "confidence": 1
+        }
+      },
+      {
+        "parameterId": "KF_SAMPLE_MASS",
+        "parameterDesc": "Sample mass",
+        "_source": {
+          "section": "8 PARAMETERS",
+          "row": ".2",
+          "confidence": 1
+        }
+      },
+      {
+        "parameterId": "KF_WATER_FOUND",
+        "parameterDesc": "Water found",
+        "_source": {
+          "section": "8 PARAMETERS",
+          "row": ".3",
+          "confidence": 1
+        }
+      },
+      {
+        "parameterId": "KF_WATER_CONTENT",
+        "parameterDesc": "Water content",
+        "_source": {
+          "section": "8 PARAMETERS",
+          "row": ".4",
+          "confidence": 1
+        }
+      },
+      {
+        "parameterId": "KF_ANALYST_COMMENT",
+        "parameterDesc": "Analyst comment",
+        "_source": {
+          "section": "8 PARAMETERS",
+          "row": ".5",
+          "confidence": 1
+        }
+      }
+    ],
+    "limitTypes": [
+      {
+        "limitTypeId": "SYSTEM_SUITABILITY",
+        "limitTypeDesc": "System Suitability",
+        "condition": "Not OOS generating",
+        "_source": {
+          "section": "11 LIMITS",
+          "row": "1",
+          "confidence": 1
+        }
+      },
+      {
+        "limitTypeId": "SYSTEM_SUITABILITY",
+        "limitTypeDesc": "System Suitability",
+        "condition": "Not OOS generating",
+        "_source": {
+          "section": "11 LIMITS",
+          "row": "2",
+          "confidence": 1
+        }
+      },
+      {
+        "limitTypeId": "RELEASE_LIMIT",
+        "limitTypeDesc": "Release Limit",
+        "condition": "OOS generating yes",
+        "_source": {
+          "section": "11 LIMITS",
+          "row": "3",
+          "confidence": 1
+        }
+      },
+      {
+        "limitTypeId": "ALERT_LIMIT",
+        "limitTypeDesc": "Alert Limit",
+        "condition": "Not OOS generating",
+        "_source": {
+          "section": "11 LIMITS",
+          "row": "4",
+          "confidence": 1
+        }
+      }
+    ],
+    "parameterLists": [
+      {
+        "parameterListId": "KF_PARAMETERS",
+        "parameterListDesc": "Parameters for KF Analysis",
+        "items": [
+          {
+            "parameterId": "KF_CELL_DRIFT",
+            "parameterType": "Standard",
+            "dataType": "N",
+            "displayUnit": "ug/min",
+            "userSequence": 10,
+            "_source": {
+              "section": "8 PARAMETERS",
+              "row": "1",
+              "confidence": 1
+            }
+          },
+          {
+            "parameterId": "KF_SAMPLE_MASS",
+            "parameterType": "Standard",
+            "dataType": "N",
+            "displayUnit": "mg",
+            "userSequence": 20,
+            "_source": {
+              "section": "8 PARAMETERS",
+              "row": "2",
+              "confidence": 1
+            }
+          },
+          {
+            "parameterId": "KF_WATER_FOUND",
+            "parameterType": "Standard",
+            "dataType": "N",
+            "displayUnit": "ug",
+            "userSequence": 30,
+            "_source": {
+              "section": "8 PARAMETERS",
+              "row": "3",
+              "confidence": 1
+            }
+          },
+          {
+            "parameterId": "KF_WATER_CONTENT",
+            "parameterType": "Standard",
+            "dataType": "N",
+            "displayUnit": "percent",
+            "userSequence": 40,
+            "_source": {
+              "section": "8 PARAMETERS",
+              "row": "4",
+              "confidence": 1
+            }
+          },
+          {
+            "parameterId": "KF_WATER_CONTENT",
+            "parameterType": "Average",
+            "dataType": "N",
+            "displayUnit": "percent",
+            "userSequence": 50,
+            "_source": {
+              "section": "9 CALCULATIONS",
+              "row": "2",
+              "confidence": 1
+            }
+          },
+          {
+            "parameterId": "KF_WATER_CONTENT",
+            "parameterType": "%RSD",
+            "dataType": "N",
+            "displayUnit": "percent",
+            "userSequence": 60,
+            "_source": {
+              "section": "9 CALCULATIONS",
+              "row": "3",
+              "confidence": 1
+            }
+          },
+          {
+            "parameterId": "KF_ANALYST_COMMENT",
+            "parameterType": "Standard",
+            "dataType": "T",
+            "displayUnit": "",
+            "userSequence": 70,
+            "_source": {
+              "section": "8 PARAMETERS",
+              "row": "5",
+              "confidence": 1
+            }
+          }
+        ]
+      }
+    ],
+    "specifications": [
+      {
+        "specificationId": "SYSTEM_SUITABILITY_CELL_DRIFT",
+        "specificationDesc": "cell drift must be less than or equal to 15.0 ug/min. Not OO S generating.",
+        "parameterLimits": [
+          {
+            "parameterId": "KF_CELL_DRIFT",
+            "limitTypeId": "SYSTEM_SUITABILITY",
+            "operator1": "\u003E=",
+            "value1": "infinity",
+            "operator2": "\u003C=",
+            "value2": "infinity",
+            "_source": {
+              "section": "11 LIMITS",
+              "row": "1",
+              "confidence": 0.8
+            }
+          }
+        ]
+      },
+      {
+        "specificationId": "SYSTEM_SUITABILITY_WATER_CONTENT_RSD",
+        "specificationDesc": "RSD of water content must be less than or equal to 2.0 perce nt. Not OOS generating.",
+        "parameterLimits": [
+          {
+            "parameterId": "KF_WATER_CONTENT",
+            "limitTypeId": "SYSTEM_SUITABILITY",
+            "operator1": "\u003E=",
+            "value1": "infinity",
+            "operator2": "\u003C=",
+            "value2": "infinity",
+            "_source": {
+              "section": "11 LIMITS",
+              "row": "2",
+              "confidence": 0.8
+            }
+          }
+        ]
+      },
+      {
+        "specificationId": "RELEASE_LIMIT_WATER_CONTENT",
+        "specificationDesc": "mean water content must be greater than or equal to 0.100 percent and less than or equal to 0.500 percent. OOS generating yes.",
+        "parameterLimits": [
+          {
+            "parameterId": "KF_WATER_CONTENT",
+            "limitTypeId": "RELEASE_LIMIT",
+            "operator1": "\u003E=",
+            "value1": "infinity",
+            "operator2": "\u003C=",
+            "value2": "infinity",
+            "_source": {
+              "section": "11 LIMITS",
+              "row": "3",
+              "confidence": 0.9
+            }
+          }
+        ]
+      },
+      {
+        "specificationId": "ALERT_LIMIT_WATER_CONTENT",
+        "specificationDesc": "mean water content greater than 0.450 percent triggers a warning. N ot OOS generating.",
+        "parameterLimits": [
+          {
+            "parameterId": "KF_WATER_CONTENT",
+            "limitTypeId": "ALERT_LIMIT",
+            "operator1": "\u003E=",
+            "value1": "infinity",
+            "operator2": "\u003C=",
+            "value2": "infinity",
+            "_source": {
+              "section": "11 LIMITS",
+              "row": "4",
+              "confidence": 0.9
+            }
+          }
+        ]
+      }
+    ],
+    "testMethods": [
+      {
+        "testMethodId": "WI-CHM-001",
+        "testMethodDesc": "Determination of Water Content by Coulometric Karl Fischer Titration",
+        "versionId": "3.0",
+        "applicableSampleTypeId": "",
+        "destructiveTestFlag": "N",
+        "quantity": "",
+        "quantityUnit": "",
+        "_source": {
+          "section": "1",
+          "row": "1",
+          "confidence": 1
+        }
+      }
+    ],
+    "references": {
+      "sampleTypes": [],
+      "instrumentTypes": [],
+      "reagentTypes": [],
+      "departments": []
+    },
+    "unresolved": [
+      {
+        "section": "10 REPORTING",
+        "text": "Report the mean water content rounded to three decimal places.",
+        "reason": "This is a reporting instruction and not a master data field.",
+        "confidence": 0.9
+      },
+      {
+        "section": "11 LIMITS",
+        "text": "System suitability: cell drift must be less than or equal to 15.0 ug/min. Not OO S generating.",
+        "reason": "This is a system suitability limit and not a master data field.",
+        "confidence": 0.9
+      },
+      {
+        "section": "11 LIMITS",
+        "text": "System suitability: RSD of water content must be less than or equal to 2.0 perce nt. Not OOS generating.",
+        "reason": "This is a system suitability limit and not a master data field.",
+        "confidence": 0.9
+      },
+      {
+        "section": "11 LIMITS",
+        "text": "Release limit: mean water content must be greater than or equal to 0.100 percent and less than or equal to 0.500 percent. OOS generating yes.",
+        "reason": "This is a release limit and not a master data field.",
+        "confidence": 0.9
+      },
+      {
+        "section": "11 LIMITS",
+        "text": "Alert limit: mean water content greater than 0.450 percent triggers a warning. N ot OOS generating.",
+        "reason": "This is an alert limit and not a master data field.",
+        "confidence": 0.9
+      }
+    ]
+  },
+  "passes": [
+    {
+      "name": "source",
+      "itemCount": 7,
+      "seconds": 10.598668,
+      "error": null
+    },
+    {
+      "name": "units",
+      "itemCount": 4,
+      "seconds": 23.591968,
+      "error": null
+    },
+    {
+      "name": "parameters",
+      "itemCount": 5,
+      "seconds": 31.4168372,
+      "error": null
+    },
+    {
+      "name": "limitTypes",
+      "itemCount": 4,
+      "seconds": 35.3990639,
+      "error": null
+    },
+    {
+      "name": "parameterLists",
+      "itemCount": 1,
+      "seconds": 77.6753641,
+      "error": null
+    },
+    {
+      "name": "specifications",
+      "itemCount": 4,
+      "seconds": 75.458483,
+      "error": null
+    },
+    {
+      "name": "testMethods",
+      "itemCount": 1,
+      "seconds": 15.5428244,
+      "error": null
+    },
+    {
+      "name": "references",
+      "itemCount": 0,
+      "seconds": 4.6398604,
+      "error": null
+    },
+    {
+      "name": "unresolved",
+      "itemCount": 5,
+      "seconds": 48.0777145,
+      "error": null
+    }
+  ],
+  "schemaValid": true,
+  "schemaErrors": [],
+  "seconds": 322.4096837
+}

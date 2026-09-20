@@ -80,7 +80,8 @@ public static class MasterDataPasses
                   "required": ["units"]
                 }
                 """,
-            Sections: ["8", "11"]),
+            Sections: ["8", "11"],
+            IdField: "unitId"),
 
         new ExtractionPass(
             Name: "parameters",
@@ -113,7 +114,8 @@ public static class MasterDataPasses
                   "required": ["parameters"]
                 }
                 """,
-            Sections: ["8", "9"]),
+            Sections: ["8", "9"],
+            IdField: "parameterId"),
 
         new ExtractionPass(
             Name: "limitTypes",
@@ -121,7 +123,9 @@ public static class MasterDataPasses
                 "List the kinds of limit named in the limits table. Release limit, alert limit, " +
                 "system suitability and process control are DIFFERENT limit types, not different " +
                 "operators of the same limit. 'condition' is the outcome reported when the limit " +
-                "is applied (Pass, Fail, Warn).",
+                "is applied (Pass, Fail, Warn). " +
+                "limitTypeDesc is a SHORT label of two to four words, never the full sentence " +
+                "copied from the document.",
             JsonSchema: $$"""
                 {
                   "type": "object",
@@ -144,18 +148,23 @@ public static class MasterDataPasses
                   "required": ["limitTypes"]
                 }
                 """,
-            Sections: ["11"]),
+            Sections: ["11"],
+            IdField: "limitTypeId"),
 
         new ExtractionPass(
             Name: "parameterLists",
             Instruction:
-                "Build the data entry template: one header and one row per parameter of the table. " +
+                "Build the data entry template for this document. Produce exactly ONE parameter " +
+                "list covering every parameter, never one list per document section. " +
+                "One row per parameter of the table. " +
                 "parameterType is 'Standard' for the measured value; use 'Average', " +
                 "'StandardDeviation' or '%RSD' for replicate statistics, repeating the SAME parameterId. " +
                 "dataType: 'N' numeric entered or read from an instrument, 'NC' numeric calculated " +
                 "(the formula goes in calcRule), 'T' text, 'R' selection from a list, 'S' lookup on " +
                 "another record. userSequence follows the row order of the table, in steps of 10. " +
-                "displayUnit must be exactly one of the units already extracted.",
+                "parameterId and displayUnit MUST be taken verbatim from the identifiers already " +
+                "extracted, listed below. Never rename them and never invent a new parameterId " +
+                "for a replicate statistic.",
             JsonSchema: $$"""
                 {
                   "type": "object",
@@ -196,7 +205,9 @@ public static class MasterDataPasses
                   "required": ["parameterLists"]
                 }
                 """,
-            Sections: ["8", "9"]),
+            Sections: ["8", "9"],
+            DependsOn: ["units", "parameters"],
+            IdField: "parameterListId"),
 
         new ExtractionPass(
             Name: "specifications",
@@ -207,7 +218,11 @@ public static class MasterDataPasses
                 "oosGeneratingFlag comes from the 'OOS generating' column: 'Y' when a failure is a " +
                 "formal out-of-specification event. If the document has both OOS and non-OOS limits, " +
                 "that is TWO specifications, because the flag belongs to the specification and not " +
-                "to the individual limit.",
+                "to the individual limit. " +
+                "limitTypeId MUST be one of the limit type identifiers already extracted, listed " +
+                "below — it names WHICH KIND of limit this is, and is never an operator: " +
+                "the comparison itself belongs in operator1 and operator2. " +
+                "parameterId and parameterType MUST also be taken verbatim from the identifiers below.",
             JsonSchema: $$"""
                 {
                   "type": "object",
@@ -248,7 +263,9 @@ public static class MasterDataPasses
                   "required": ["specifications"]
                 }
                 """,
-            Sections: ["10", "11"]),
+            Sections: ["10", "11"],
+            DependsOn: ["parameters", "limitTypes", "parameterLists"],
+            IdField: "specificationId"),
 
         new ExtractionPass(
             Name: "testMethods",

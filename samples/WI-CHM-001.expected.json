@@ -1,0 +1,78 @@
+{
+  "$contract": "lab.masterdata.payload/v1",
+
+  "source": {
+    "documentId": "WI-CHM-001",
+    "documentVersion": "3.0",
+    "documentTitle": "Determination of Water Content by Coulometric Karl Fischer Titration",
+    "effectiveDate": "2026-01-15"
+  },
+
+  "units": [
+    { "unitId": "UG/MIN",  "unitDesc": "ug/min" },
+    { "unitId": "MG",      "unitDesc": "mg" },
+    { "unitId": "UG",      "unitDesc": "ug" },
+    { "unitId": "PERCENT", "unitDesc": "percent" }
+  ],
+
+  "parameters": [
+    { "parameterId": "CELL_DRIFT",      "parameterDesc": "Cell drift" },
+    { "parameterId": "SAMPLE_MASS",     "parameterDesc": "Sample mass" },
+    { "parameterId": "WATER_FOUND",     "parameterDesc": "Water found" },
+    { "parameterId": "WATER_CONTENT",   "parameterDesc": "Water content" },
+    { "parameterId": "ANALYST_COMMENT", "parameterDesc": "Analyst comment" }
+  ],
+
+  "limitTypes": [
+    { "limitTypeId": "SYSTEM_SUITABILITY", "limitTypeDesc": "System suitability" },
+    { "limitTypeId": "RELEASE_LIMIT",      "limitTypeDesc": "Release limit" },
+    { "limitTypeId": "ALERT_LIMIT",        "limitTypeDesc": "Alert limit" }
+  ],
+
+  "parameterLists": [
+    {
+      "parameterListId": "PL_KF_WATER",
+      "parameterListDesc": "Determination of Water Content by Coulometric Karl Fischer Titration",
+      "items": [
+        { "parameterId": "CELL_DRIFT",      "parameterType": "Standard", "dataType": "N",  "displayUnit": "ug/min",  "displayFormat": "0.0",    "numReplicates": 1, "mandatoryFlag": "Y" },
+        { "parameterId": "SAMPLE_MASS",     "parameterType": "Standard", "dataType": "N",  "displayUnit": "mg",      "displayFormat": "0.0000", "numReplicates": 3, "mandatoryFlag": "Y" },
+        { "parameterId": "WATER_FOUND",     "parameterType": "Standard", "dataType": "N",  "displayUnit": "ug",      "displayFormat": "0.0",    "numReplicates": 3, "mandatoryFlag": "Y" },
+        { "parameterId": "WATER_CONTENT",   "parameterType": "Standard", "dataType": "NC", "displayUnit": "percent", "displayFormat": "0.000",  "numReplicates": 3, "mandatoryFlag": "Y" },
+
+        { "parameterId": "WATER_CONTENT",   "parameterType": "Average",  "dataType": "NC", "displayUnit": "percent" },
+        { "parameterId": "WATER_CONTENT",   "parameterType": "%RSD",     "dataType": "NC", "displayUnit": "percent" },
+
+        { "parameterId": "ANALYST_COMMENT", "parameterType": "Standard", "dataType": "T",  "mandatoryFlag": "N" }
+      ]
+    }
+  ],
+
+  "specifications": [
+    {
+      "specificationId": "SP_KF_WATER_RELEASE",
+      "specificationDesc": "Release limits for water content",
+      "oosGeneratingFlag": "Y",
+      "parameterLimits": [
+        { "parameterId": "WATER_CONTENT", "parameterType": "Average", "limitTypeId": "RELEASE_LIMIT", "operator1": ">=", "value1": "0.100", "operator2": "<=", "value2": "0.500" }
+      ]
+    },
+    {
+      "specificationId": "SP_KF_WATER_CONTROL",
+      "specificationDesc": "System suitability and alert limits",
+      "oosGeneratingFlag": "N",
+      "parameterLimits": [
+        { "parameterId": "CELL_DRIFT",    "parameterType": "Standard", "limitTypeId": "SYSTEM_SUITABILITY", "operator1": "<=", "value1": "15.0" },
+        { "parameterId": "WATER_CONTENT", "parameterType": "%RSD",     "limitTypeId": "SYSTEM_SUITABILITY", "operator1": "<=", "value1": "2.0" },
+        { "parameterId": "WATER_CONTENT", "parameterType": "Average",  "limitTypeId": "ALERT_LIMIT",        "operator1": ">",  "value1": "0.450" }
+      ]
+    }
+  ],
+
+  "testMethods": [
+    {
+      "testMethodId": "WI-CHM-001",
+      "testMethodDesc": "Determination of Water Content by Coulometric Karl Fischer Titration",
+      "departmentId": "CHEMISTRY_LAB"
+    }
+  ]
+}

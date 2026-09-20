@@ -1,0 +1,494 @@
+[
+  {
+    "Document": "WI-CHM-001",
+    "SchemaValid": true,
+    "Seconds": 322.4268512,
+    "Entities": [
+      {
+        "Entity": "units",
+        "Expected": 4,
+        "MatchedByKey": 4,
+        "MatchedByLabel": 0,
+        "Missing": 0,
+        "Extra": 0,
+        "FieldsCompared": 8,
+        "FieldsCorrect": 5,
+        "MissingKeys": [],
+        "ExtraKeys": [],
+        "FieldMisses": [
+          {
+            "Key": "ug/min",
+            "Field": "unitDesc",
+            "Expected": "ug/min",
+            "Actual": "microgram per minute"
+          },
+          {
+            "Key": "mg",
+            "Field": "unitDesc",
+            "Expected": "mg",
+            "Actual": "milligram"
+          },
+          {
+            "Key": "ug",
+            "Field": "unitDesc",
+            "Expected": "ug",
+            "Actual": "microgram"
+          }
+        ],
+        "Aliases": {
+          "ug/min": "ug/min",
+          "mg": "mg",
+          "ug": "ug",
+          "percent": "percent"
+        },
+        "Matched": 4,
+        "Recall": 1,
+        "Precision": 1,
+        "FieldAccuracy": 0.625,
+        "IdentifierDrift": 0
+      },
+      {
+        "Entity": "parameters",
+        "Expected": 5,
+        "MatchedByKey": 0,
+        "MatchedByLabel": 5,
+        "Missing": 0,
+        "Extra": 0,
+        "FieldsCompared": 10,
+        "FieldsCorrect": 5,
+        "MissingKeys": [],
+        "ExtraKeys": [],
+        "FieldMisses": [
+          {
+            "Key": "cell_drift",
+            "Field": "parameterId",
+            "Expected": "cell_drift",
+            "Actual": "kf_cell_drift"
+          },
+          {
+            "Key": "sample_mass",
+            "Field": "parameterId",
+            "Expected": "sample_mass",
+            "Actual": "kf_sample_mass"
+          },
+          {
+            "Key": "water_found",
+            "Field": "parameterId",
+            "Expected": "water_found",
+            "Actual": "kf_water_found"
+          },
+          {
+            "Key": "water_content",
+            "Field": "parameterId",
+            "Expected": "water_content",
+            "Actual": "kf_water_content"
+          },
+          {
+            "Key": "analyst_comment",
+            "Field": "parameterId",
+            "Expected": "analyst_comment",
+            "Actual": "kf_analyst_comment"
+          }
+        ],
+        "Aliases": {
+          "kf_cell_drift": "cell_drift",
+          "kf_sample_mass": "sample_mass",
+          "kf_water_found": "water_found",
+          "kf_water_content": "water_content",
+          "kf_analyst_comment": "analyst_comment"
+        },
+        "Matched": 5,
+        "Recall": 1,
+        "Precision": 1,
+        "FieldAccuracy": 0.5,
+        "IdentifierDrift": 1
+      },
+      {
+        "Entity": "limitTypes",
+        "Expected": 3,
+        "MatchedByKey": 3,
+        "MatchedByLabel": 0,
+        "Missing": 0,
+        "Extra": 1,
+        "FieldsCompared": 6,
+        "FieldsCorrect": 6,
+        "MissingKeys": [],
+        "ExtraKeys": [
+          "system_suitability"
+        ],
+        "FieldMisses": [],
+        "Aliases": {
+          "system_suitability": "system_suitability",
+          "release_limit": "release_limit",
+          "alert_limit": "alert_limit"
+        },
+        "Matched": 3,
+        "Recall": 1,
+        "Precision": 0.75,
+        "FieldAccuracy": 1,
+        "IdentifierDrift": 0
+      },
+      {
+        "Entity": "parameterLists",
+        "Expected": 1,
+        "MatchedByKey": 0,
+        "MatchedByLabel": 0,
+        "Missing": 1,
+        "Extra": 1,
+        "FieldsCompared": 0,
+        "FieldsCorrect": 0,
+        "MissingKeys": [
+          "pl_kf_water"
+        ],
+        "ExtraKeys": [
+          "kf_parameters"
+        ],
+        "FieldMisses": [],
+        "Aliases": {},
+        "Matched": 0,
+        "Recall": 0,
+        "Precision": 0,
+        "FieldAccuracy": 1,
+        "IdentifierDrift": 0
+      },
+      {
+        "Entity": "paramListItems",
+        "Expected": 7,
+        "MatchedByKey": 7,
+        "MatchedByLabel": 0,
+        "Missing": 0,
+        "Extra": 0,
+        "FieldsCompared": 40,
+        "FieldsCorrect": 17,
+        "MissingKeys": [],
+        "ExtraKeys": [],
+        "FieldMisses": [
+          {
+            "Key": "cell_drift|standard",
+            "Field": "parameterId",
+            "Expected": "cell_drift",
+            "Actual": "kf_cell_drift"
+          },
+          {
+            "Key": "cell_drift|standard",
+            "Field": "displayFormat",
+            "Expected": "0.0",
+            "Actual": null
+          },
+          {
+            "Key": "cell_drift|standard",
+            "Field": "numReplicates",
+            "Expected": "1",
+            "Actual": null
+          },
+          {
+            "Key": "cell_drift|standard",
+            "Field": "mandatoryFlag",
+            "Expected": "y",
+            "Actual": null
+          },
+          {
+            "Key": "sample_mass|standard",
+            "Field": "parameterId",
+            "Expected": "sample_mass",
+            "Actual": "kf_sample_mass"
+          },
+          {
+            "Key": "sample_mass|standard",
+            "Field": "displayFormat",
+            "Expected": "0.0000",
+            "Actual": null
+          },
+          {
+            "Key": "sample_mass|standard",
+            "Field": "numReplicates",
+            "Expected": "3",
+            "Actual": null
+          },
+          {
+            "Key": "sample_mass|standard",
+            "Field": "mandatoryFlag",
+            "Expected": "y",
+            "Actual": null
+          },
+          {
+            "Key": "water_found|standard",
+            "Field": "parameterId",
+            "Expected": "water_found",
+            "Actual": "kf_water_found"
+          },
+          {
+            "Key": "water_found|standard",
+            "Field": "displayFormat",
+            "Expected": "0.0",
+            "Actual": null
+          },
+          {
+            "Key": "water_found|standard",
+            "Field": "numReplicates",
+            "Expected": "3",
+            "Actual": null
+          },
+          {
+            "Key": "water_found|standard",
+            "Field": "mandatoryFlag",
+            "Expected": "y",
+            "Actual": null
+          },
+          {
+            "Key": "water_content|standard",
+            "Field": "parameterId",
+            "Expected": "water_content",
+            "Actual": "kf_water_content"
+          },
+          {
+            "Key": "water_content|standard",
+            "Field": "dataType",
+            "Expected": "nc",
+            "Actual": "n"
+          },
+          {
+            "Key": "water_content|standard",
+            "Field": "displayFormat",
+            "Expected": "0.000",
+            "Actual": null
+          },
+          {
+            "Key": "water_content|standard",
+            "Field": "numReplicates",
+            "Expected": "3",
+            "Actual": null
+          },
+          {
+            "Key": "water_content|standard",
+            "Field": "mandatoryFlag",
+            "Expected": "y",
+            "Actual": null
+          },
+          {
+            "Key": "water_content|average",
+            "Field": "parameterId",
+            "Expected": "water_content",
+            "Actual": "kf_water_content"
+          },
+          {
+            "Key": "water_content|average",
+            "Field": "dataType",
+            "Expected": "nc",
+            "Actual": "n"
+          },
+          {
+            "Key": "water_content|%rsd",
+            "Field": "parameterId",
+            "Expected": "water_content",
+            "Actual": "kf_water_content"
+          },
+          {
+            "Key": "water_content|%rsd",
+            "Field": "dataType",
+            "Expected": "nc",
+            "Actual": "n"
+          },
+          {
+            "Key": "analyst_comment|standard",
+            "Field": "parameterId",
+            "Expected": "analyst_comment",
+            "Actual": "kf_analyst_comment"
+          },
+          {
+            "Key": "analyst_comment|standard",
+            "Field": "mandatoryFlag",
+            "Expected": "n",
+            "Actual": null
+          }
+        ],
+        "Aliases": {},
+        "Matched": 7,
+        "Recall": 1,
+        "Precision": 1,
+        "FieldAccuracy": 0.425,
+        "IdentifierDrift": 0
+      },
+      {
+        "Entity": "specifications",
+        "Expected": 2,
+        "MatchedByKey": 0,
+        "MatchedByLabel": 0,
+        "Missing": 2,
+        "Extra": 4,
+        "FieldsCompared": 0,
+        "FieldsCorrect": 0,
+        "MissingKeys": [
+          "sp_kf_water_release",
+          "sp_kf_water_control"
+        ],
+        "ExtraKeys": [
+          "system_suitability_cell_drift",
+          "system_suitability_water_content_rsd",
+          "release_limit_water_content",
+          "alert_limit_water_content"
+        ],
+        "FieldMisses": [],
+        "Aliases": {},
+        "Matched": 0,
+        "Recall": 0,
+        "Precision": 0,
+        "FieldAccuracy": 1,
+        "IdentifierDrift": 0
+      },
+      {
+        "Entity": "paramLimits",
+        "Expected": 4,
+        "MatchedByKey": 4,
+        "MatchedByLabel": 0,
+        "Missing": 0,
+        "Extra": 0,
+        "FieldsCompared": 22,
+        "FieldsCorrect": 6,
+        "MissingKeys": [],
+        "ExtraKeys": [],
+        "FieldMisses": [
+          {
+            "Key": "water_content|release_limit",
+            "Field": "parameterId",
+            "Expected": "water_content",
+            "Actual": "kf_water_content"
+          },
+          {
+            "Key": "water_content|release_limit",
+            "Field": "parameterType",
+            "Expected": "average",
+            "Actual": null
+          },
+          {
+            "Key": "water_content|release_limit",
+            "Field": "value1",
+            "Expected": "0.1",
+            "Actual": "Infinity"
+          },
+          {
+            "Key": "water_content|release_limit",
+            "Field": "value2",
+            "Expected": "0.5",
+            "Actual": "Infinity"
+          },
+          {
+            "Key": "cell_drift|system_suitability",
+            "Field": "parameterId",
+            "Expected": "cell_drift",
+            "Actual": "kf_cell_drift"
+          },
+          {
+            "Key": "cell_drift|system_suitability",
+            "Field": "parameterType",
+            "Expected": "standard",
+            "Actual": null
+          },
+          {
+            "Key": "cell_drift|system_suitability",
+            "Field": "operator1",
+            "Expected": "\u003C=",
+            "Actual": "\u003E="
+          },
+          {
+            "Key": "cell_drift|system_suitability",
+            "Field": "value1",
+            "Expected": "15",
+            "Actual": "Infinity"
+          },
+          {
+            "Key": "water_content|system_suitability",
+            "Field": "parameterId",
+            "Expected": "water_content",
+            "Actual": "kf_water_content"
+          },
+          {
+            "Key": "water_content|system_suitability",
+            "Field": "parameterType",
+            "Expected": "%rsd",
+            "Actual": null
+          },
+          {
+            "Key": "water_content|system_suitability",
+            "Field": "operator1",
+            "Expected": "\u003C=",
+            "Actual": "\u003E="
+          },
+          {
+            "Key": "water_content|system_suitability",
+            "Field": "value1",
+            "Expected": "2",
+            "Actual": "Infinity"
+          },
+          {
+            "Key": "water_content|alert_limit",
+            "Field": "parameterId",
+            "Expected": "water_content",
+            "Actual": "kf_water_content"
+          },
+          {
+            "Key": "water_content|alert_limit",
+            "Field": "parameterType",
+            "Expected": "average",
+            "Actual": null
+          },
+          {
+            "Key": "water_content|alert_limit",
+            "Field": "operator1",
+            "Expected": "\u003E",
+            "Actual": "\u003E="
+          },
+          {
+            "Key": "water_content|alert_limit",
+            "Field": "value1",
+            "Expected": "0.45",
+            "Actual": "Infinity"
+          }
+        ],
+        "Aliases": {},
+        "Matched": 4,
+        "Recall": 1,
+        "Precision": 1,
+        "FieldAccuracy": 0.2727272727272727,
+        "IdentifierDrift": 0
+      },
+      {
+        "Entity": "testMethods",
+        "Expected": 1,
+        "MatchedByKey": 1,
+        "MatchedByLabel": 0,
+        "Missing": 0,
+        "Extra": 0,
+        "FieldsCompared": 3,
+        "FieldsCorrect": 2,
+        "MissingKeys": [],
+        "ExtraKeys": [],
+        "FieldMisses": [
+          {
+            "Key": "wi-chm-001",
+            "Field": "departmentId",
+            "Expected": "chemistry_lab",
+            "Actual": null
+          }
+        ],
+        "Aliases": {},
+        "Matched": 1,
+        "Recall": 1,
+        "Precision": 1,
+        "FieldAccuracy": 0.6666666666666666,
+        "IdentifierDrift": 0
+      }
+    ],
+    "FailedPasses": [],
+    "Expected": 27,
+    "Matched": 24,
+    "Extra": 6,
+    "FieldsCompared": 89,
+    "FieldsCorrect": 41,
+    "MatchedByLabel": 5,
+    "Recall": 0.8888888888888888,
+    "Precision": 0.8,
+    "FieldAccuracy": 0.4606741573033708,
+    "IdentifierDrift": 0.20833333333333334
+  }
+]
